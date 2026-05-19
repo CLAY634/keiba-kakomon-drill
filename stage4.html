@@ -1339,14 +1339,43 @@ function renderYoutubeSearchLink() {
 
 
 
+
+function getHorseNumberFromCheckbox(input) {
+    const candidates = [
+        input.value,
+        input.dataset.number,
+        input.dataset.horseNumber,
+        input.getAttribute("data-number"),
+        input.getAttribute("data-horse-number")
+    ];
+
+    for (const raw of candidates) {
+        const n = parseInt(raw, 10);
+        if (Number.isFinite(n) && n > 0) return n;
+    }
+
+    const row = input.closest("tr");
+    if (row) {
+        const cells = Array.from(row.children);
+        for (const cell of cells) {
+            const text = (cell.innerText || cell.textContent || "").trim();
+            if (/^\d+$/.test(text)) {
+                const n = parseInt(text, 10);
+                if (Number.isFinite(n) && n > 0 && n <= 30) return n;
+            }
+        }
+    }
+
+    return null;
+}
+
 function updateSelectedHorsesPanel() {
     const panel = document.getElementById("selected-horses-list");
     if (!panel || !Array.isArray(raceData.horses)) return;
 
     const checked = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
         .map(input => {
-            const raw = input.value || input.dataset.number || input.dataset.horseNumber || input.getAttribute("data-number");
-            const n = parseInt(raw, 10);
+            const n = getHorseNumberFromCheckbox(input);
             if (!Number.isFinite(n)) return null;
             const horse = raceData.horses.find(h => Number(h.number) === n);
             if (!horse) return `${n}番`;
@@ -1368,7 +1397,75 @@ document.addEventListener("change", function(e) {
 });
 document.addEventListener("DOMContentLoaded", updateSelectedHorsesPanel);
 
+
+
+function getWideSelects() {
+    return Array.from(document.querySelectorAll("select")).filter(sel => {
+        const areaText = ((sel.closest("div") || sel.parentElement || document.body).innerText || "");
+        const meta = (sel.id || "") + " " + (sel.name || "") + " " + (sel.className || "");
+        return areaText.includes("ワイド") || /wide/i.test(meta);
+    });
+}
+
+function normalizeSelectValue(value) {
+    if (!value) return "";
+    if (value === "選択なし") return "";
+    return String(value).trim();
+}
+
+function updateWideSelectOptions() {
+    const wideSelects = getWideSelects();
+    if (wideSelects.length < 2) return;
+
+    const firstValue = normalizeSelectValue(wideSelects[0].value);
+    const secondValue = normalizeSelectValue(wideSelects[1].value);
+
+    wideSelects.forEach((select, index) => {
+        const otherValue = index === 0 ? secondValue : firstValue;
+
+        Array.from(select.options).forEach(option => {
+            const optionValue = normalizeSelectValue(option.value);
+            const shouldBlock = Boolean(otherValue && optionValue && optionValue === otherValue);
+
+            option.disabled = shouldBlock;
+            option.hidden = shouldBlock;
+
+            if (shouldBlock && normalizeSelectValue(select.value) === optionValue) {
+                select.value = "";
+            }
+        });
+    });
+}
+
+function validateWideSelection() {
+    updateWideSelectOptions();
+
+    const wideSelects = getWideSelects();
+    if (wideSelects.length >= 2) {
+        const a = normalizeSelectValue(wideSelects[0].value);
+        const b = normalizeSelectValue(wideSelects[1].value);
+        if (a && b && a === b) {
+            alert("ワイドは同じ馬を2頭に指定できません。別の馬を選んでください。");
+            return false;
+        }
+    }
+    return true;
+}
+
+document.addEventListener("change", function(e) {
+    if (e.target && e.target.matches("select")) {
+        const wideSelects = getWideSelects();
+        if (wideSelects.includes(e.target)) {
+            updateWideSelectOptions();
+        }
+    }
+});
+document.addEventListener("DOMContentLoaded", updateWideSelectOptions);
+
+
+
 function judgeRace(){
+    if (!validateWideSelection()) return;
     const total = Number(document.getElementById("win-amount").value) +
                   Number(document.getElementById("place-amount").value) +
                   Number(document.getElementById("wide-amount").value);
@@ -1526,5 +1623,9 @@ ${raceData.title}
 <!-- AUDIT_FIX_V45_SELECTED_HORSES: added checked-horse summary near prediction inputs and compacted spacing. -->
 
 <!-- AUDIT_FIX_V46_BEGINNER_LINK: added beginner guide link opening in a new tab. -->
+
+<!-- AUDIT_FIX_V47_CHECKBOX_WIDE: fixed checked-horse panel and blocked duplicate wide selections. -->
+
+<!-- AUDIT_FIX_V48_WIDE_OPTION_FILTER: wide selects now hide/disable duplicate horse options. -->
 </body>
 </html>
