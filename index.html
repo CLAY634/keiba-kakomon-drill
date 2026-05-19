@@ -72,6 +72,54 @@ body { margin:0; padding:20px; background:#f3f4f6; font-family:'Helvetica Neue',
 }
 
 
+
+.compact-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+  margin: 18px 0 22px;
+}
+.compact-stat {
+  padding: 14px 12px;
+  text-align: center;
+  border-right: 1px solid #e5e7eb;
+}
+.compact-stat:last-child {
+  border-right: none;
+}
+.compact-stat-label {
+  display: block;
+  font-size: 0.82em;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+.compact-stat-value {
+  display: block;
+  font-size: 1.25em;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.25;
+}
+@media (max-width: 520px) {
+  .compact-stats {
+    margin: 14px 0 18px;
+  }
+  .compact-stat {
+    padding: 12px 6px;
+  }
+  .compact-stat-value {
+    font-size: 1.12em;
+  }
+  .compact-stat-label {
+    font-size: 0.76em;
+  }
+}
+
 </style>
 
 <style>
@@ -112,9 +160,22 @@ body { margin:0; padding:20px; background:#f3f4f6; font-family:'Helvetica Neue',
 </div>
 </section>
 <section class="stats-grid">
-<div class="stat-card"><div class="stat-label">プレイ済み</div><div class="stat-value"><span id="played-count">0</span> / <span id="total-count">0</span> 問</div></div>
-<div class="stat-card"><div class="stat-label">総払戻</div><div class="stat-value"><span id="total-payout">0</span> 円</div></div>
-<div class="stat-card"><div class="stat-label">総回収率</div><div class="stat-value"><span id="total-recovery">0</span>%</div></div>
+<div class="stat-card">
+<div class="compact-stats" aria-label="プレイ成績">
+  <div class="compact-stat">
+    <span class="compact-stat-label">プレイ済み</span>
+    <span class="compact-stat-value"><span id="played-count">0</span> / 10問</span>
+  </div>
+  <div class="compact-stat">
+    <span class="compact-stat-label">総払戻</span>
+    <span class="compact-stat-value"><span id="total-payout">0</span>円</span>
+  </div>
+  <div class="compact-stat">
+    <span class="compact-stat-label">総回収率</span>
+    <span class="compact-stat-value"><span id="total-recovery">0</span>%</span>
+  </div>
+</div>
+</div>
 </section>
 <main>
 <section class="section-card">
@@ -487,5 +548,7 @@ renderStages();
 <!-- AUDIT_FIX_V39_TIME_ESTIMATE: added expected play time note. -->
 
 <!-- AUDIT_FIX_V40_TIME_NOTE_INTEGRATED: moved play-time note into intro copy. -->
+
+<!-- AUDIT_FIX_V44_COMPACT_STATS: compacted top-page progress stats into one status bar. -->
 </body>
 </html>
