@@ -120,6 +120,53 @@ body { margin:0; padding:20px; background:#f3f4f6; font-family:'Helvetica Neue',
   }
 }
 
+
+/* v50: make top stats a full-width compact bar instead of a tiny floating card */
+.compact-stats {
+  width: 100% !important;
+  max-width: none !important;
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  margin: 14px 0 22px !important;
+  box-sizing: border-box !important;
+}
+.compact-stat {
+  min-width: 0 !important;
+}
+@media (min-width: 720px) {
+  .compact-stats {
+    max-width: 100% !important;
+  }
+}
+
+
+/* v51: fix top stats wrapper width */
+.top-stats-wrapper {
+  width: 100% !important;
+  max-width: none !important;
+  display: block !important;
+  box-sizing: border-box !important;
+}
+.top-stats-wrapper .compact-stats,
+.compact-stats {
+  width: 100% !important;
+  max-width: none !important;
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+.top-stats-wrapper .compact-stat,
+.compact-stat {
+  min-width: 0 !important;
+}
+
+
+.top-stats-wrapper {
+  grid-column: 1 / -1 !important;
+  flex: 1 1 100% !important;
+}
+
 </style>
 
 <style>
@@ -160,7 +207,7 @@ body { margin:0; padding:20px; background:#f3f4f6; font-family:'Helvetica Neue',
 </div>
 </section>
 <section class="stats-grid">
-<div class="stat-card">
+<div class="stat-card top-stats-wrapper">
 <div class="compact-stats" aria-label="プレイ成績">
   <div class="compact-stat">
     <span class="compact-stat-label">プレイ済み</span>
@@ -550,5 +597,9 @@ renderStages();
 <!-- AUDIT_FIX_V40_TIME_NOTE_INTEGRATED: moved play-time note into intro copy. -->
 
 <!-- AUDIT_FIX_V44_COMPACT_STATS: compacted top-page progress stats into one status bar. -->
+
+<!-- AUDIT_FIX_V50_INDEX_STATS_WIDTH: expanded compact stats to full-width bar. -->
+
+<!-- AUDIT_FIX_V51_STATS_WIDTH: fixed narrow top stats wrapper. -->
 </body>
 </html>
