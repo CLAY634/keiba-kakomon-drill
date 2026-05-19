@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>第4問：【コース】小回り2500mの位置取り勝負</title>
+
+<style>
+body{
+    margin:0;
+    padding:20px;
+    background:#f3f4f6;
+    font-family:'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+    color:#222;
+}
+.container{
+    max-width:1200px;
+    margin:auto;
+    background:white;
+    padding:24px;
+    border-radius:12px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+header {
+    border-bottom: 2px solid #333;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+h1{ margin-top:10px; margin-bottom:10px; }
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+th,td{
+    border:1px solid #ddd;
+    padding:12px 10px;
+    font-size:14px;
+    vertical-align: middle;
+}
+th{ background:#f5f5f5; text-align: center; }
+th.sortable{
+    cursor:pointer;
+    user-select:none;
+}
+th.sortable:hover{ background:#e9ecef; }
+.sort-mark{
+    font-size:0.8em;
+    color:#777;
+    margin-left:4px;
+}
+.text-center{ text-align:center; }
+button{ cursor:pointer; }
+.result-box{
+    margin-top:30px;
+    padding:20px;
+    border:2px solid #d9534f;
+    border-radius:8px;
+    display:none;
+    background-color: #fff;
+}
+.search-link {
+    color: #0275d8;
+    text-decoration: none;
+    font-weight: bold;
+}
+.search-link:hover { text-decoration: underline; }
+.waku-1 { background:#fff; color:#000; }
+.waku-2 { background:#000; color:#fff; }
+.waku-3 { background:#ff0000; color:#fff; }
+.waku-4 { background:#0000ff; color:#fff; }
+.waku-5 { background:#ffff00; color:#000; }
+.waku-6 { background:#008000; color:#fff; }
+.waku-7 { background:#ffa500; color:#000; }
+.waku-8 { background:#ffc0cb; color:#000; }
+.status-keizoku{ color:#28a745; font-weight:bold; font-size: 0.85em; }
+.status-norigawari{ color:#dc3545; font-weight:bold; font-size: 0.85em; }
+.input-note{ color:#666;font-size:0.9em;margin:8px 0 0 0; }
+
+.pace-box {
+    background: #f8f9fa;
+    border: 1px solid #dfe3e8;
+    border-left: 5px solid #6c757d;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 18px 0 24px 0;
+}
+.pace-box h2 {
+    margin: 0 0 10px 0;
+    font-size: 1.1em;
+}
+.pace-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.pace-cell {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 0.95em;
+}
+.pace-cell b {
+    display: block;
+    margin-bottom: 4px;
+}
+.pace-note {
+    margin: 8px 0 0 0;
+    line-height: 1.7;
+    color: #444;
+    font-size: 0.95em;
+}
+
+.sort-reset-btn {
+    cursor: pointer;
+    padding: 6px 10px;
+    background: #f1f3f5;
+    color: #222;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+.sort-reset-btn:hover {
+    background: #e9ecef;
+}
+.pace-box summary {
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.1em;
+    user-select: none;
+}
+.pace-box[open] summary {
+    margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+    .pace-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    body { padding: 10px; }
+    .container { padding: 14px; }
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    th, td { font-size: 12px; padding: 8px; }
+    label {
+        display: block !important;
+        width: auto !important;
+        margin-bottom: 5px;
+    }
+    input[type="number"] { width: 90px !important; }
+}
+
+.focus-box{background:#f7fbff;border:1px solid #cfe2ff;border-left:5px solid #0275d8;border-radius:8px;padding:16px;margin:18px 0 24px 0}.focus-box h2{margin:0 0 8px 0;font-size:1.1em}.focus-box .focus-lead{margin:0 0 12px 0;color:#444;font-size:.95em;line-height:1.7}.focus-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.focus-card{background:#fff;border:1px solid #dfe8f5;border-radius:8px;padding:10px;font-size:.92em;line-height:1.6}.focus-card b{display:block;margin-bottom:4px}.focus-number{font-weight:bold;color:#0275d8}@media(max-width:768px){.focus-grid{grid-template-columns:1fr 1fr}}
+
+
+.focus-box summary{cursor:pointer;font-weight:bold;font-size:1.1em;user-select:none}.focus-box[open] summary{margin-bottom:10px}.next-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.next-actions a{display:inline-block;text-decoration:none;border-radius:6px;padding:12px 18px;font-weight:bold}.next-actions .next-stage-btn{background:#0275d8;color:#fff}.next-actions .back-index-btn{background:#f1f3f5;color:#222;border:1px solid #ddd}@media(max-width:768px){.next-actions{display:block}.next-actions a{display:block;text-align:center;margin-bottom:8px}}
+
+
+.selected-result-box {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin: 16px 0 20px 0;
+    line-height: 1.7;
+}
+.selected-result-box h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.05em;
+}
+.selected-result-box ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+
+.detailed-result-box {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin: 16px 0 20px 0;
+    line-height: 1.7;
+}
+.detailed-result-box summary {
+    cursor: pointer;
+    font-weight: bold;
+    user-select: none;
+}
+.detailed-result-box table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+}
+.detailed-result-box th,
+.detailed-result-box td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    font-size: 0.92em;
+}
+.detailed-result-box th {
+    background: #f5f5f5;
+}
+.detailed-result-note {
+    color: #666;
+    font-size: 0.9em;
+    margin: 8px 0 0 0;
+}
+
+
+.compare-check {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+.compare-row {
+    background: #fffdf2;
+}
+
+
+.bet-template-box {
+    background: #f7fbff;
+    border: 1px solid #cfe2ff;
+    border-left: 5px solid #0275d8;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin: 18px 0;
+    line-height: 1.7;
+}
+.bet-template-box h3 {
+    margin: 0 0 6px 0;
+    font-size: 1.05em;
+}
+.bet-template-box p {
+    margin: 0 0 10px 0;
+    color: #555;
+    font-size: 0.92em;
+}
+.bet-template-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.bet-template-buttons button {
+    border: 1px solid #ccd6e0;
+    background: #fff;
+    border-radius: 6px;
+    padding: 9px 12px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.bet-template-buttons button:hover {
+    background: #eef6ff;
+}
+.bet-template-note {
+    color: #666;
+    font-size: 0.88em;
+    margin-top: 8px;
+}
+@media (max-width: 768px) {
+    .bet-template-buttons button {
+        width: 100%;
+        text-align: left;
+    }
+}
+
+
+.selected-finish-row {
+    background: #fff3cd !important;
+    font-weight: bold;
+}
+.selected-finish-label {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 2px 6px;
+    border-radius: 999px;
+    background: #ffe08a;
+    color: #5f4100;
+    font-size: 0.78em;
+    font-weight: bold;
+}
+
+
+.turning-points-list {
+    display: grid;
+    gap: 10px;
+    margin: 8px 0 14px;
+}
+.turning-point-card {
+    background: #ffffff;
+    border: 1px solid #d7eadc;
+    border-left: 4px solid #5cb85c;
+    border-radius: 8px;
+    padding: 10px 12px;
+    line-height: 1.65;
+    font-size: 0.94em;
+}
+.turning-point-card .tp-title {
+    font-weight: 700;
+    color: #205b2a;
+    margin-bottom: 3px;
+}
+.turning-point-card .tp-horses {
+    font-weight: 700;
+    color: #111;
+}
+
+
+.youtube-search-box {
+    margin: 12px 0;
+    padding: 10px 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    line-height: 1.55;
+    font-size: 0.92em;
+    color: #475569;
+}
+.youtube-search-box a {
+    font-weight: 600;
+    color: #475569;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+.youtube-search-box a:hover {
+    color: #1e293b;
+}
+.youtube-search-note {
+    font-size: 0.86em;
+    color: #64748b;
+    margin-top: 3px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+    <p style="margin: 0;">
+        <a href="index.html" style="color: #0275d8; text-decoration: none; font-weight: bold;">← ステージ選択へ戻る</a>
+    </p>
+    <h1 id="race-title"></h1>
+    <p style="margin: 0;">
+        <span id="race-subtitle" style="font-weight: bold;"></span>
+        <a id="course-search-link" href="" target="_blank" style="margin-left: 15px; font-size: 0.9em; color: #d9534f; text-decoration: underline; font-weight: bold;">🔍今回のコース特徴を検索</a>
+    </p>
+</header>
+
+<main>
+
+<details style="background-color: #fff9e6; border: 1px solid #ffe0b2; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
+    <summary style="cursor: pointer; font-weight: bold; color: #e65100;">
+        💡 迷ったら見るヒント
+    </summary>
+    <div style="margin-top: 10px; font-size: 0.95em; line-height: 1.6; color: #5d4037;">
+        <ul>
+            <li>【コースを見る】：中山2500mはコーナーを何度も回る特殊コース。内枠・位置取り・器用さが大きな武器になります。</li>
+            <li>【展開を見る】：スローからのロングスパートになりやすく、早めに良い位置を取れる馬が有利です。</li>
+            <li>【罠を見る】：強烈な末脚だけでは届かないことがあります。外を回される差し馬より、内でロスなく運べる馬を探しましょう。</li>
+        </ul>
+    </div>
+</details>
+
+<details class="pace-box">
+    <summary>展開メモを開く</summary>
+    <div class="pace-grid">
+        <div class="pace-cell"><b>逃げ候補</b>2</div>
+        <div class="pace-cell"><b>先行候補</b>1, 7, 10, 12, 15</div>
+        <div class="pace-cell"><b>中団候補</b>3, 4, 5, 6, 9, 14</div>
+        <div class="pace-cell"><b>後方候補</b>8, 11, 13, 16</div>
+    </div>
+    <p class="pace-note"><b>読みどころ：</b>小回り2500mらしく、内でロスなく運べる馬が有利になりやすい。外から差す馬は能力だけでなく、位置取りと進路取りが課題。</p>
+</details>
+
+<details class="focus-box">
+<summary>詰まった時だけ見るヒント：注目4頭</summary>
+<p class="focus-lead">全頭を見るのが大変な時だけ開いてください。少し答えに近づくヒントです。考える入口として、展開の鍵・判断が分かれる馬・穴候補・1番人気を軸にした本命候補を1頭ずつ挙げています。</p>
+<div class="focus-grid">
+<div class="focus-card"><b>展開の鍵</b><span class="focus-number">10番</span><br>好位〜中団から動ける候補。前を捕まえに行く形を想像したい。</div>
+<div class="focus-card"><b>判断が分かれる馬</b><span class="focus-number">14番</span><br>能力はあるが、外から動く形になると難しさもある。</div>
+<div class="focus-card"><b>穴候補</b><span class="focus-number">3番</span><br>人気は控えめでも、ロスなく運べれば上位に残る可能性。</div>
+<div class="focus-card"><b>本命候補</b><span class="focus-number">2番</span><br>オッズ上もっとも支持されている馬。まずこの馬を信じるか疑うかから考えると分かりやすい。</div>
+    </div>
+</details>
+
+
+
+<section style="margin-bottom: 30px;">
+<h2 style="font-size: 1.3em; border-left: 5px solid #333; padding-left: 10px;">出馬表・統計データ</h2>
+<p style="font-size:0.9em;color:#666;margin:8px 0 0 0;">※スマホでは横画面がおすすめです。表は横にスクロールできます。「オッズ」「騎手」「馬体重」「代表戦績」はクリックで並び替えできます。<br>※気になる馬にチェックを入れると、「比較」列でチェック馬を上に集められます。</p>
+<div style="margin: 8px 0 0 0;"><button type="button" class="sort-reset-btn" onclick="resetSort()">並び順を馬番順に戻す</button></div>
+
+<table>
+<thead>
+<tr>
+    <th class="sortable" style="width: 5%;" onclick="sortTable('checked')">比較<span id="sort-checked" class="sort-mark">↕</span></th>
+    <th style="width: 4%;">枠</th>
+    <th style="width: 4%;">馬番</th>
+    <th style="width: 10%;">馬名</th>
+    <th class="sortable" style="width: 10%;" onclick="sortTable('jockeyRate')">騎手<span id="sort-jockeyRate" class="sort-mark">↕</span></th>
+    <th class="sortable" style="width: 6%;" onclick="sortTable('odds')">オッズ<span id="sort-odds" class="sort-mark">↕</span></th>
+    <th style="width: 14%;">代表実績 (検索)</th>
+    <th class="sortable" style="width: 10%;" onclick="sortTable('weight')">馬体重<span id="sort-weight" class="sort-mark">↕</span></th>
+    <th class="sortable" style="width: 28%;" onclick="sortTable('last3f')">過去5戦の代表戦績<span id="sort-last3f" class="sort-mark">↕</span></th>
+    <th style="width: 14%;">パドック短評</th>
+</tr>
+</thead>
+<tbody id="race-table"></tbody>
+</table>
+</section>
+
+<section style="margin-bottom: 30px;">
+<div style="margin-top:30px; background-color: #fafafa; padding: 20px; border: 1px solid #dcdcdc; border-radius: 5px;">
+<h2>予想入力 <span style="font-size: 0.7em; font-weight: normal; color: #666;">※予算総額1,000円</span></h2>
+
+<p>
+    <label style="display:inline-block; width:120px;"><b>
+<div class="bet-template-box">
+    <h3>買い方に迷ったら</h3>
+    <p>馬を選んだあと、金額配分だけテンプレで入れられます。慣れてきたら自由に調整してください。</p>
+    <div class="bet-template-buttons">
+        <button type="button" onclick="applyBetTemplate('stable')">安定型：複勝500 / ワイド500</button>
+        <button type="button" onclick="applyBetTemplate('favorite')">本命型：単勝400 / 複勝400 / ワイド200</button>
+        <button type="button" onclick="applyBetTemplate('wide')">ワイド型：複勝300 / ワイド700</button>
+        <button type="button" onclick="applyBetTemplate('reset')">金額をリセット</button>
+    </div>
+    <div class="bet-template-note">※テンプレは金額だけを入れます。どの馬を選ぶかは自分で決めます。</div>
+</div>
+
+単勝 (1着指定):</b></label>
+    <select id="win-select" style="padding: 5px;"></select>
+    ➔ 配分： <select id="win-amount" style="width: 90px; padding: 5px;">
+        <option value="0">0</option><option value="100">100</option><option value="200">200</option><option value="300">300</option><option value="400">400</option><option value="500">500</option><option value="600">600</option><option value="700">700</option><option value="800">800</option><option value="900">900</option><option value="1000">1000</option>
+    </select> 円
+</p>
+<p>
+    <label style="display:inline-block; width:120px;"><b>複勝 (3着以内):</b></label>
+    <select id="place-select" style="padding: 5px;"></select>
+    ➔ 配分： <select id="place-amount" style="width: 90px; padding: 5px;">
+        <option value="0">0</option><option value="100">100</option><option value="200">200</option><option value="300">300</option><option value="400">400</option><option value="500">500</option><option value="600">600</option><option value="700">700</option><option value="800">800</option><option value="900">900</option><option value="1000">1000</option>
+    </select> 円
+</p>
+<p>
+    <label style="display:inline-block; width:120px;"><b>ワイド (2頭指定):</b></label>
+    <select id="wide1" style="padding: 5px;"></select>
+    ＝
+    <select id="wide2" style="padding: 5px;"></select>
+    ➔ 配分： <select id="wide-amount" style="width: 90px; padding: 5px;">
+        <option value="0">0</option><option value="100">100</option><option value="200">200</option><option value="300">300</option><option value="400">400</option><option value="500">500</option><option value="600">600</option><option value="700">700</option><option value="800">800</option><option value="900">900</option><option value="1000">1000</option>
+    </select> 円
+</p>
+
+<div style="background-color: #fff; padding: 15px; border: 1px dashed #ccc; margin: 20px 0;">
+    <p style="font-size:18px; margin: 0;">
+        現在の合計： <span id="total-display">0</span> 円 ／
+        <b>残り予算： <span id="remain-display" style="color: #0275d8;">1000</span> 円</b>
+    </p>
+    <p id="budget-warning" style="color: red; font-size: 0.9em; margin-top: 5px; display: none;">※予算の1,000円を超えないように自動調整されます</p>
+</div>
+
+<p class="input-note">配分は合計1,000円を超えないように自動調整されます。100円単位で入力してください。</p>
+
+<button onclick="judgeRace()" style="padding:12px 25px; background:#0275d8; color:white; border:none; border-radius:6px; width: 100%; font-size: 1.1em; font-weight: bold;">
+    この買い方で結果を見る
+</button>
+</div>
+</section>
+
+<div class="result-box" id="result-box">
+<h2 style="color: #d9534f; margin-top: 0;">🏁 レース結果・確定</h2>
+<p id="result-text" style="font-size: 1.1em; font-weight: bold;"></p>
+
+<div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+    <h3 style="margin-top: 0;">■ あなたの収支精算</h3>
+    <ul style="font-size: 1.1em; list-style-type: none; padding-left: 10px;">
+        <li>配分合計：1000円</li>
+        <li>払戻合計：<b style="color: red;"><span id="payout-display">0</span>円</b></li>
+        <li>回収率：<b style="color: red;"><span id="recovery-display">0</span>%</b></li>
+        <li>初回スコア：<b><span id="first-score-display">-</span></b></li>
+        <li>ベストスコア：<b><span id="best-score-display">-</span></b></li>
+        <li id="score-memory-note" style="font-size: 0.9em; color: #555;"></li>
+    </ul>
+</div>
+
+
+<div class="selected-result-box" id="selected-result-box" style="display:none;">
+    <h3>■ あなたが選んだ馬の結果</h3>
+    <ul id="selected-result-list"></ul>
+</div>
+
+
+<details class="detailed-result-box">
+    <summary>詳しい着順を見る</summary>
+    <p class="detailed-result-note">着差は前の馬との差です。未確認の着差は「確認中」と表示しています。</p>
+    <table>
+        <thead>
+            <tr>
+                <th>着順</th>
+                <th>馬番</th>
+                <th>匿名名</th>
+                <th>着差</th>
+            </tr>
+        </thead>
+        <tbody id="detailed-result-table"></tbody>
+    </table>
+</details>
+
+<div style="background-color: #eef9f0; padding: 20px; border-left: 5px solid #5cb85c; margin-bottom: 30px;">
+    <h3 style="margin-top: 0; color: #2d6a2e;">🔓 解答・解説：この過去問の正体</h3>
+    <div id="youtube-search-box" class="youtube-search-box" style="display:none;">
+        🎥 余裕があれば：<a id="youtube-search-link" href="#" target="_blank" rel="noopener noreferrer">レース展開を映像で確認する</a>
+        <div class="youtube-search-note">YouTubeで「<span id="youtube-search-query"></span>」を検索します。</div>
+    </div>
+
+    <p id="real-race" style="font-size: 1.2em; font-weight: bold; border-bottom: 1px solid #ccc; padding-bottom: 10px;"></p>
+    <h4 style="margin-bottom: 5px;">📝 解説：このレースの見どころ</h4>
+    <p id="analysis-text" style="line-height: 1.7; font-size: 0.95em; color: #333; margin: 0;"></p>
+    
+    <h4 style="margin: 18px 0 8px;">🔍 展開別の明暗</h4>
+    <div id="turning-points-list" class="turning-points-list"></div>
+
+<ul id="learning-points" style="line-height: 1.7; margin-top: 15px;"></ul>
+</div>
+
+<button onclick="shareToX()" style="padding:15px 30px; background:black; color:white; border:none; border-radius:6px; width: 100%; font-size: 1.1em; font-weight: bold;">
+    𝕏 成績をポストする
+</button>
+
+<div class="next-actions">
+    <a class="next-stage-btn" href="stage5.html">第5問へ進む</a>
+    <a class="back-index-btn" href="index.html">過去問一覧へ戻る</a>
+</div>
+
+</div>
+
+
+<section style="margin-top: 32px; padding: 16px; background:#f8f9fa; border:1px solid #e5e7eb; border-radius:8px; color:#555; font-size:0.9em; line-height:1.7;">
+    <b>このサイトについて</b><br>
+    競馬過去問ドリルは、過去の競馬レースを題材にした学習・分析ゲームです。
+    実際の馬券購入を推奨するものではありません。表示される配分・払戻は、ゲーム内のシミュレーションとして扱っています。
+</section>
+
+<section class="dm-note" style="margin-top:16px;padding:14px 16px;background:#fff;border:1px solid #e5e7eb;border-radius:8px;color:#555;font-size:.9em;line-height:1.7;">
+データや表記に誤りがあれば、XのDMまで教えてもらえると助かります。
+<a href="https://x.com/susugigawa" target="_blank" style="color:#0275d8;font-weight:bold;">@susugigawa</a>
+</section>
+</main>
+</div>
+
+<script>
+const raceData = {
+    "id": "stage4",
+    "legacyId": "race4",
+    "title": "第4問：【コース】小回り2500mの位置取り勝負",
+    "subtitle": "コース条件：中山 芝2500m / 右回り / 良馬場（出走：16頭）",
+    "courseQuery": "中山競馬場 芝2500m 特徴 有馬記念",
+    "budget": 1000,
+    "hints": [
+        "【コースを見る】：中山2500mはコーナーを何度も回る特殊コース。内枠・位置取り・器用さが大きな武器になります。",
+        "【展開を見る】：スローからのロングスパートになりやすく、早めに良い位置を取れる馬が有利です。",
+        "【罠を見る】：強烈な末脚だけでは届かないことがあります。外を回される差し馬より、内でロスなく運べる馬を探しましょう。"
+    ],
+    "horses": [
+        {
+            "number": 1,
+            "frame": 1,
+            "name": "ホースA",
+            "odds": 24.6,
+            "jockey": {
+                "name": "騎手A",
+                "status": "継続",
+                "rate": "28%"
+            },
+            "winRace": "中京芝2000m(G2)",
+            "winRaceQuery": "中京 芝2000m 特徴",
+            "weight": "510kg（+4）",
+            "previousRace": "・前走 東京2000m [11着] 36.0秒 (2-2-2)",
+            "comment": "内枠から先行できる中山巧者。距離延長と相手強化が課題だが、ロスなく運べれば粘り込みも。"
+        },
+        {
+            "number": 2,
+            "frame": 1,
+            "name": "ホースB",
+            "odds": 1.9,
+            "jockey": {
+                "name": "騎手B",
+                "status": "継続",
+                "rate": "46%"
+            },
+            "winRace": "中山芝2500m(G1)",
+            "winRaceQuery": "中山 芝2500m 特徴",
+            "weight": "540kg（-2）",
+            "previousRace": "・前走 東京2400m [3着] 35.3秒 (1-1-1-1)",
+            "comment": "内枠の逃げ先行型。中山2500mで自分の形に持ち込めるのが最大の強み。最後まで脚を残せるかが焦点。"
+        },
+        {
+            "number": 3,
+            "frame": 2,
+            "name": "ホースC",
+            "odds": 33.1,
+            "jockey": {
+                "name": "騎手C",
+                "status": "乗替",
+                "rate": "44%"
+            },
+            "winRace": "京都芝2200m(G1)",
+            "winRaceQuery": "京都 芝2200m 特徴",
+            "weight": "474kg（±0）",
+            "previousRace": "・前走 京都2200m [7着] 34.6秒 (7-7-7-7)",
+            "comment": "牝馬ながら中距離G1実績あり。内枠でロスなく脚をためられるなら、人気以上に怖い存在。"
+        },
+        {
+            "number": 4,
+            "frame": 2,
+            "name": "ホースD",
+            "odds": 71.7,
+            "jockey": {
+                "name": "騎手D",
+                "status": "継続",
+                "rate": "21%"
+            },
+            "winRace": "東京芝1800m(G3)",
+            "winRaceQuery": "東京 芝1800m 特徴",
+            "weight": "466kg（+4）",
+            "previousRace": "・前走 京都3000m [12着] 36.8秒 (10-10-10-10)",
+            "comment": "3歳馬で素質はあるが、古馬G1の中山2500mでは経験不足。器用さと持久力が問われる。"
+        },
+        {
+            "number": 5,
+            "frame": 3,
+            "name": "ホースE",
+            "odds": 159.5,
+            "jockey": {
+                "name": "騎手E",
+                "status": "乗替",
+                "rate": "24%"
+            },
+            "winRace": "中山芝1800m(G3)",
+            "winRaceQuery": "中山 芝1800m 特徴",
+            "weight": "482kg（+10）",
+            "previousRace": "・前走 京都2200m [10着] 35.0秒 (5-5-5-5)",
+            "comment": "立ち回りは悪くないが、距離と相手が厳しい。好位で運んでも最後の坂で甘くなる可能性。"
+        },
+        {
+            "number": 6,
+            "frame": 3,
+            "name": "ホースF",
+            "odds": 70.7,
+            "jockey": {
+                "name": "騎手F",
+                "status": "継続",
+                "rate": "32%"
+            },
+            "winRace": "阪神芝2000m(G3)",
+            "winRaceQuery": "阪神 芝2000m 特徴",
+            "weight": "454kg（±0）",
+            "previousRace": "・前走 阪神2000m [1着] 35.5秒 (6-6-6-6)",
+            "comment": "上昇中の3歳馬。勢いはあるが、中山2500mで古馬の持久力勝負に対応できるかが課題。"
+        },
+        {
+            "number": 7,
+            "frame": 4,
+            "name": "ホースG",
+            "odds": 29.6,
+            "jockey": {
+                "name": "騎手G",
+                "status": "継続",
+                "rate": "34%"
+            },
+            "winRace": "中山芝2500m(G2)",
+            "winRaceQuery": "中山 芝2500m 特徴",
+            "weight": "520kg（-4）",
+            "previousRace": "・前走 東京2400m [4着] 35.0秒 (2-2-2-2)",
+            "comment": "先行力がありコース適性もある。勝ち切るには一線級相手にもう一段の持続力が必要。"
+        },
+        {
+            "number": 8,
+            "frame": 4,
+            "name": "ホースH",
+            "odds": 44.7,
+            "jockey": {
+                "name": "騎手H",
+                "status": "継続",
+                "rate": "30%"
+            },
+            "winRace": "京都芝3000m(G1 2着)",
+            "winRaceQuery": "京都 芝3000m 特徴",
+            "weight": "444kg（-4）",
+            "previousRace": "・前走 東京2400m [6着] 35.2秒 (12-12-12-12)",
+            "comment": "長距離での末脚は魅力。ただし後方から外を回す形だと、中山2500mでは届きにくい。"
+        },
+        {
+            "number": 9,
+            "frame": 5,
+            "name": "ホースI",
+            "odds": 72.9,
+            "jockey": {
+                "name": "騎手I",
+                "status": "継続",
+                "rate": "22%"
+            },
+            "winRace": "札幌芝2000m(G2)",
+            "winRaceQuery": "札幌 芝2000m 特徴",
+            "weight": "494kg（+12）",
+            "previousRace": "・前走 東京2000m [8着] 35.4秒 (8-8-8)",
+            "comment": "中山向きの器用さはあるが、今回は馬体増と距離が鍵。ロングスパート戦で踏ん張れるか。"
+        },
+        {
+            "number": 10,
+            "frame": 5,
+            "name": "ホースJ",
+            "odds": 6.7,
+            "jockey": {
+                "name": "騎手J",
+                "status": "乗替",
+                "rate": "39%"
+            },
+            "winRace": "東京芝2400m(G1)",
+            "winRaceQuery": "東京 芝2400m 特徴",
+            "weight": "474kg（+4）",
+            "previousRace": "・前走 東京2400m [1着] 34.7秒 (5-5-5-4)",
+            "comment": "前走で長距離適性を証明。中山替わりで器用さは問われるが、持続力と地力は上位。"
+        },
+        {
+            "number": 11,
+            "frame": 6,
+            "name": "ホースK",
+            "odds": 55.4,
+            "jockey": {
+                "name": "騎手K",
+                "status": "乗替",
+                "rate": "25%"
+            },
+            "winRace": "東京芝1800m(G2)",
+            "winRaceQuery": "東京 芝1800m 特徴",
+            "weight": "460kg（+6）",
+            "previousRace": "・前走 東京2400m [9着] 35.0秒 (14-14-14-14)",
+            "comment": "末脚型で直線の長いコース向き。中山2500mで最後方からでは届きにくい。"
+        },
+        {
+            "number": 12,
+            "frame": 6,
+            "name": "ホースL",
+            "odds": 9.8,
+            "jockey": {
+                "name": "騎手L",
+                "status": "乗替",
+                "rate": "43%"
+            },
+            "winRace": "東京芝2400m(G1)",
+            "winRaceQuery": "東京 芝2400m 特徴",
+            "weight": "496kg（±0）",
+            "previousRace": "・前走 東京2400m [10着] 36.0秒 (6-6-6-6)",
+            "comment": "道悪やタフな馬場で強いタイプ。良馬場の中山2500mでは距離と位置取りが難しい。"
+        },
+        {
+            "number": 13,
+            "frame": 7,
+            "name": "ホースM",
+            "odds": 19.6,
+            "jockey": {
+                "name": "騎手M",
+                "status": "継続",
+                "rate": "27%"
+            },
+            "winRace": "東京芝2400m(G1)",
+            "winRaceQuery": "東京 芝2400m 特徴",
+            "weight": "432kg（-10）",
+            "previousRace": "・前走 京都2200m [3着] 34.4秒 (10-10-10-10)",
+            "comment": "差し脚は確かだが馬体減と外枠が気になる。内で脚をためたいタイプだけに枠順が課題。"
+        },
+        {
+            "number": 14,
+            "frame": 7,
+            "name": "ホースN",
+            "odds": 4.5,
+            "jockey": {
+                "name": "騎手N",
+                "status": "継続",
+                "rate": "41%"
+            },
+            "winRace": "東京芝2500m(G2)",
+            "winRaceQuery": "東京 芝2500m 特徴",
+            "weight": "510kg（+8）",
+            "previousRace": "・前走 東京2500m [1着] 34.8秒 (8-8-8-6)",
+            "comment": "3歳の実力馬で末脚は強力。ただし外枠から中山2500mをロスなく回れるかが最大の課題。"
+        },
+        {
+            "number": 15,
+            "frame": 8,
+            "name": "ホースO",
+            "odds": 204.8,
+            "jockey": {
+                "name": "騎手O",
+                "status": "乗替",
+                "rate": "33%"
+            },
+            "winRace": "京都芝3200m(G1 2着)",
+            "winRaceQuery": "京都 芝3200m 特徴",
+            "weight": "460kg（+4）",
+            "previousRace": "・前走 東京2400m [15着] 36.7秒 (4-4-4-4)",
+            "comment": "長距離実績はあるが、近走内容が重い。外枠から先行するとスタミナを削られやすい。"
+        },
+        {
+            "number": 16,
+            "frame": 8,
+            "name": "ホースP",
+            "odds": 132.9,
+            "jockey": {
+                "name": "騎手P",
+                "status": "乗替",
+                "rate": "26%"
+            },
+            "winRace": "京都芝3000m(G1 2着)",
+            "winRaceQuery": "京都 芝3000m 特徴",
+            "weight": "512kg（+10）",
+            "previousRace": "・前走 東京2400m [12着] 35.6秒 (13-13-13-13)",
+            "comment": "過去の好走歴はあるが、外枠と近走不振が課題。差しに回ると届きにくい。"
+        }
+    ],
+    "result": {
+        "first": 2,
+        "second": 3,
+        "third": 10
+    },
+    "payouts": {
+        "win": {
+            "2": 1.9
+        },
+        "place": {
+            "2": 1.2,
+            "3": 5.5,
+            "10": 1.8
+        },
+        "wide": {
+            "2-3": 11.8,
+            "2-10": 2.8,
+            "3-10": 27.6
+        }
+    },
+    "analysis": {
+        "realRace": "【 2017年 有馬記念（G1） / 勝ち馬：キタサンブラック 】",
+        "summary": "中山2500mはコーナーを何度も回る特殊コースで、内枠からロスなく運べる馬が大きなアドバンテージを得ます。ホースB（キタサンブラック）は1枠2番から逃げ、道中を自分のリズムで刻んで最後まで押し切りました。ラップは中盤で緩み、後半はロングスパート。外から差す馬には厳しく、内で脚をためたホースC（クイーンズリング）が人気薄ながら2着、ホースJ（シュヴァルグラン）が地力で3着に入りました。",
+        "turningPoints": [
+            { "title": "内枠から主導権を取った馬", "horses": "2番", "text": "中山2500mでロスなく先手を取り、自分のリズムで運べたことが大きな勝因でした。コース形態と枠順が強みに直結しました。" },
+            { "title": "内で脚をためた馬", "horses": "3番・10番", "text": "外を回すロスを避け、内で我慢して直線に向いた馬が上位に入りました。人気薄でもコース取りが噛み合うと好走できます。" },
+            { "title": "外から差すには厳しかった馬", "horses": "12番・13番・15番など", "text": "中山2500mではコーナーが多く、外を回されると距離ロスが大きくなります。東京向きの末脚だけでは届きにくい展開でした。" }
+        ],
+        "learningPoints": [
+            "中山2500mは内枠とコーナーワークが重要",
+            "逃げ馬が楽に主導権を取れると強い",
+            "有馬記念は東京向きの末脚だけでは届かないことがある",
+            "人気薄でも内でロスなく運べる馬は警戒が必要"
+        ]
+    }
+};
+
+
+raceData.eventName = "2017年 有馬記念（G1）";
+
+raceData.finishOrder = [2,3,10,14,11,6,16,8,1,12,13,7,9,5,15,4];
+raceData.finishMargins = {"2": "-", "3": "1 1/2馬身", "10": "ハナ"};
+
+
+raceData.realNames = {"2": "キタサンブラック", "3": "クイーンズリング", "10": "シュヴァルグラン", "14": "スワーヴリチャード", "11": "ルージュバック", "7": "シャケトラ", "16": "サウンズオブアース", "8": "レインボーライン", "1": "ヤマカツエース", "12": "サトノクラウン", "13": "ミッキークイーン", "6": "サトノクロニクル", "4": "ブレスジャーニー","5":"トーセンビクトリー", "15": "カレンミロティック", "9": "サクラアンプルール"};
+
+document.getElementById("race-title").innerText = raceData.title;
+document.getElementById("race-subtitle").innerText = raceData.subtitle;
+document.getElementById("course-search-link").href = "https://www.google.com/search?q=" + encodeURIComponent(raceData.courseQuery);
+
+const table = document.getElementById("race-table");
+let selectedFinishHorseNumbers = new Set();
+const checkedHorseNumbers = new Set();
+let currentSortKey = null;
+let currentSortDirection = "asc";
+
+function getWeightNumber(weightText) {
+    const match = String(weightText).match(/(\d+)kg/);
+    return match ? Number(match[1]) : 0;
+}
+
+function getJockeyRateNumber(rateText) {
+    const match = String(rateText).match(/(\d+)%/);
+    return match ? Number(match[1]) : 0;
+}
+
+function getLast3FNumber(previousRaceText) {
+    const match = String(previousRaceText).match(/(\d+\.\d+)秒/);
+    return match ? Number(match[1]) : 999;
+}
+
+function getSortValue(horse, key) {
+    if (key === "checked") return checkedHorseNumbers.has(String(horse.number)) ? 1 : 0;
+    if (key === "odds") return Number(horse.odds) || 0;
+    if (key === "jockeyRate") return getJockeyRateNumber(horse.jockey.rate);
+    if (key === "weight") return getWeightNumber(horse.weight);
+    if (key === "last3f") return getLast3FNumber(horse.previousRace);
+    return horse.number;
+}
+
+function updateSortMarks() {
+    ["checked", "odds", "jockeyRate", "weight", "last3f"].forEach(key => {
+        const elem = document.getElementById("sort-" + key);
+        if (!elem) return;
+        if (currentSortKey !== key) {
+            elem.innerText = "↕";
+        } else {
+            elem.innerText = currentSortDirection === "asc" ? "▲" : "▼";
+        }
+    });
+}
+
+
+function getCurrentSortedHorses() {
+    if (!currentSortKey) return raceData.horses;
+    return [...raceData.horses].sort((a, b) => {
+        const valueA = getSortValue(a, currentSortKey);
+        const valueB = getSortValue(b, currentSortKey);
+        return currentSortDirection === "asc" ? valueA - valueB : valueB - valueA;
+    });
+}
+
+function toggleHorseCheck(number, checked) {
+    const key = String(number);
+    if (checked) {
+        checkedHorseNumbers.add(key);
+    } else {
+        checkedHorseNumbers.delete(key);
+    }
+
+    if (currentSortKey === "checked") {
+        renderTable(getCurrentSortedHorses());
+    } else {
+        renderTable(getCurrentSortedHorses());
+    }
+}
+
+function renderTable(horses) {
+    table.innerHTML = "";
+
+    horses.forEach(horse=>{
+        const tr = document.createElement("tr");
+        if (checkedHorseNumbers.has(String(horse.number))) tr.classList.add("compare-row");
+        const statusClass = horse.jockey.status === "継続" ? "status-keizoku" : "status-norigawari";
+        const searchUrl = "https://www.google.com/search?q=" + encodeURIComponent(horse.winRaceQuery || horse.winRace || "");
+
+        tr.innerHTML = `
+            <td class="text-center">
+                <input type="checkbox" class="compare-check" ${checkedHorseNumbers.has(String(horse.number)) ? "checked" : ""} onchange="toggleHorseCheck(${horse.number}, this.checked)">
+            </td>
+            <td class="text-center waku-${horse.frame}"><b>${horse.frame}</b></td>
+            <td class="text-center">${horse.number}</td>
+            <td>${horse.name}</td>
+            <td class="text-center">
+                ${horse.jockey.name}<br>
+                <span class="${statusClass}">［${horse.jockey.status}］</span><br>
+                <span style="font-size: 0.85em; color: #555;">(複勝率 ${horse.jockey.rate || "—"})</span>
+            </td>
+            <td class="text-center">${horse.odds}</td>
+            <td class="text-center">
+                <a href="${searchUrl}" target="_blank" class="search-link">${horse.winRace || "—"}</a>
+            </td>
+            <td class="text-center">${horse.weight}</td>
+            <td>${horse.previousRace}</td>
+            <td>${horse.comment}</td>
+        `;
+        table.appendChild(tr);
+    });
+    updateSortMarks();
+}
+
+function sortTable(key) {
+    if (currentSortKey === key) {
+        currentSortDirection = currentSortDirection === "asc" ? "desc" : "asc";
+    } else {
+        currentSortKey = key;
+        currentSortDirection = (key === "checked" || key === "jockeyRate" || key === "weight") ? "desc" : "asc";
+    }
+
+    renderTable(getCurrentSortedHorses());
+}
+
+
+function resetSort() {
+    currentSortKey = null;
+    currentSortDirection = "asc";
+    renderTable(raceData.horses);
+}
+
+renderTable(raceData.horses);
+
+function createSelectOptions(id){
+    const select = document.getElementById(id);
+    select.innerHTML = `<option value="0">選択なし</option>`;
+    raceData.horses.forEach(horse=>{
+        select.innerHTML += `<option value="${horse.number}">${horse.number}番</option>`;
+    });
+}
+
+createSelectOptions("win-select");
+createSelectOptions("place-select");
+createSelectOptions("wide1");
+createSelectOptions("wide2");
+
+const amountInputs = ["win-amount", "place-amount", "wide-amount"];
+amountInputs.forEach(id=>{
+    const amountElem = document.getElementById(id);
+    amountElem.addEventListener("input", function(){
+        clampBudget(id);
+    });
+    amountElem.addEventListener("change", function(){
+        clampBudget(id);
+    });
+});
+
+function clampBudget(changedInputId){
+    const ids = ["win-amount", "place-amount", "wide-amount"];
+    const inputs = ids.map(id => document.getElementById(id));
+
+    inputs.forEach(input => {
+        let value = Number(input.value || 0);
+        if (value < 0) value = 0;
+        if (value > raceData.budget) value = raceData.budget;
+        input.value = value;
+    });
+
+    let total = inputs.reduce((sum, input) => sum + Number(input.value || 0), 0);
+
+    if (total > raceData.budget) {
+        const changedInput = document.getElementById(changedInputId);
+        const otherTotal = inputs
+            .filter(input => input.id !== changedInputId)
+            .reduce((sum, input) => sum + Number(input.value || 0), 0);
+        const maxAllowed = Math.max(raceData.budget - otherTotal, 0);
+        changedInput.value = maxAllowed;
+        document.getElementById("budget-warning").style.display = "block";
+    } else {
+        document.getElementById("budget-warning").style.display = "none";
+    }
+
+    calcTotal();
+}
+
+function calcTotal(){
+    const total = Number(document.getElementById("win-amount").value) +
+                  Number(document.getElementById("place-amount").value) +
+                  Number(document.getElementById("wide-amount").value);
+    const remain = raceData.budget - total;
+    document.getElementById("total-display").innerText = total;
+    const remainDisplay = document.getElementById("remain-display");
+    remainDisplay.innerText = remain;
+    remainDisplay.style.color = remain < 0 ? "red" : "#0275d8";
+}
+
+
+function getHorseNameByNumber(number) {
+    const horse = raceData.horses.find(h => Number(h.number) === Number(number));
+    const anonymousName = horse ? horse.name : number + "番";
+    const realName = raceData.realNames ? raceData.realNames[String(number)] : "";
+    return realName ? `${anonymousName}（${realName}）` : anonymousName;
+}
+
+function getHorseFinishText(number) {
+    const order = raceData.finishOrder || [];
+    const index = order.findIndex(n => Number(n) === Number(number));
+    if (index === -1) return "着順不明";
+    return (index + 1) + "着";
+}
+
+
+function renderDetailedResultTable() {
+    const tbody = document.getElementById("detailed-result-table");
+    if (!tbody) return;
+
+    const order = raceData.finishOrder || [];
+    const margins = raceData.finishMargins || {};
+
+    if (!order.length) {
+        tbody.innerHTML = `<tr><td colspan="4" class="text-center">詳しい着順データは確認中です</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = order.map((number, index) => {
+        const horseName = getHorseNameByNumber(number);
+        const margin = margins[String(number)] || "確認中";
+        const isSelected = selectedFinishHorseNumbers.has(String(number));
+        const selectedLabel = isSelected ? `<span class="selected-finish-label">選択馬</span>` : "";
+        return `
+            <tr class="${isSelected ? "selected-finish-row" : ""}">
+                <td class="text-center">${index + 1}着</td>
+                <td class="text-center">${number}番</td>
+                <td>${horseName}${selectedLabel}</td>
+                <td class="text-center">${margin}</td>
+            </tr>
+        `;
+    }).join("");
+}
+
+function renderSelectedHorseResults(winHorse, winAmount, placeHorse, placeAmount, wide1, wide2, wideAmount) {
+    const box = document.getElementById("selected-result-box");
+    const list = document.getElementById("selected-result-list");
+    if (!box || !list) return;
+
+    const items = [];
+    const used = new Set();
+
+    function addHorse(number, label, amount) {
+        if (!number || Number(number) === 0 || Number(amount) <= 0) return;
+        const key = String(number);
+        if (used.has(key)) return;
+        used.add(key);
+        const name = getHorseNameByNumber(number);
+        const finish = getHorseFinishText(number);
+        items.push(`<li>${label}：${number}番 ${name} → <b>${finish}</b></li>`);
+    }
+
+    addHorse(winHorse, "単勝で選んだ馬", winAmount);
+    addHorse(placeHorse, "複勝で選んだ馬", placeAmount);
+    addHorse(wide1, "ワイドで選んだ馬", wideAmount);
+    addHorse(wide2, "ワイドで選んだ馬", wideAmount);
+
+    if (items.length === 0) {
+        box.style.display = "none";
+        return;
+    }
+
+    list.innerHTML = items.join("");
+    box.style.display = "block";
+}
+
+
+function setAmountSelect(id, value) {
+    const elem = document.getElementById(id);
+    if (!elem) return;
+    elem.value = String(value);
+}
+
+function applyBetTemplate(type) {
+    const templates = {
+        stable: { win: 0, place: 500, wide: 500 },
+        favorite: { win: 400, place: 400, wide: 200 },
+        wide: { win: 0, place: 300, wide: 700 },
+        reset: { win: 0, place: 0, wide: 0 }
+    };
+
+    const selected = templates[type] || templates.reset;
+    setAmountSelect("win-amount", selected.win);
+    setAmountSelect("place-amount", selected.place);
+    setAmountSelect("wide-amount", selected.wide);
+    calcTotal();
+}
+
+
+function buildScoreRecord(total, payout, recovery, winHorse, winAmount, placeHorse, placeAmount, combo, wideAmount) {
+    return {
+        version: 1,
+        stageId: raceData.id,
+        title: raceData.title,
+        recovery: Number(recovery),
+        payout: Math.floor(payout),
+        allocation: total,
+        savedAt: new Date().toISOString(),
+        picks: {
+            winHorse: String(winHorse),
+            winAmount: Number(winAmount),
+            placeHorse: String(placeHorse),
+            placeAmount: Number(placeAmount),
+            wideCombo: String(combo),
+            wideAmount: Number(wideAmount)
+        }
+    };
+}
+
+function readScoreRecord(key) {
+    try {
+        const raw = localStorage.getItem(key);
+        return raw ? JSON.parse(raw) : null;
+    } catch (error) {
+        return null;
+    }
+}
+
+function saveScoreMemory(record) {
+    const firstKey = raceData.id + "_firstScore_v1";
+    const latestKey = raceData.id + "_latestScore_v1";
+    const bestKey = raceData.id + "_bestScore_v1";
+
+    let firstRecord = readScoreRecord(firstKey);
+    let isFirstPlay = false;
+
+    if (!firstRecord) {
+        localStorage.setItem(firstKey, JSON.stringify(record));
+        firstRecord = record;
+        isFirstPlay = true;
+    }
+
+    localStorage.setItem(latestKey, JSON.stringify(record));
+
+    const bestRecord = readScoreRecord(bestKey);
+    if (!bestRecord || Number(record.recovery) > Number(bestRecord.recovery)) {
+        localStorage.setItem(bestKey, JSON.stringify(record));
+    }
+
+    return {
+        isFirstPlay: isFirstPlay,
+        firstRecord: firstRecord,
+        bestRecord: readScoreRecord(bestKey)
+    };
+}
+
+function renderScoreMemory(scoreMemory) {
+    const firstDisplay = document.getElementById("first-score-display");
+    const bestDisplay = document.getElementById("best-score-display");
+    const note = document.getElementById("score-memory-note");
+
+    if (firstDisplay && scoreMemory.firstRecord) {
+        firstDisplay.innerText = scoreMemory.firstRecord.recovery + "%";
+    }
+    if (bestDisplay && scoreMemory.bestRecord) {
+        bestDisplay.innerText = scoreMemory.bestRecord.recovery + "%";
+    }
+    if (note) {
+        note.innerText = scoreMemory.isFirstPlay
+            ? "初回スコアを保存しました。次回以降は上書きされません。"
+            : "初回スコアは保存済みです。今回は最新スコアとして記録しました。";
+    }
+}
+
+
+
+function buildYoutubeSearchQuery() {
+    const title = raceData.eventName || raceData.title || "";
+    const winnerNumber = Array.isArray(raceData.finishOrder) ? raceData.finishOrder[0] : null;
+    const winnerName = winnerNumber && raceData.realNames ? raceData.realNames[winnerNumber] : "";
+    return `${title} ${winnerName} レース映像`.trim();
+}
+
+function renderYoutubeSearchLink() {
+    const box = document.getElementById("youtube-search-box");
+    const link = document.getElementById("youtube-search-link");
+    const queryText = document.getElementById("youtube-search-query");
+    if (!box || !link) return;
+
+    const query = buildYoutubeSearchQuery();
+    const url = "https://www.youtube.com/results?search_query=" + encodeURIComponent(query);
+
+    link.href = url;
+    if (queryText) queryText.innerText = query;
+    box.style.display = "block";
+}
+
+
+function judgeRace(){
+    const total = Number(document.getElementById("win-amount").value) +
+                  Number(document.getElementById("place-amount").value) +
+                  Number(document.getElementById("wide-amount").value);
+    if(total !== raceData.budget){
+        alert("予算ぴったり1000円で入力してください。現在の合計は " + total + " 円です。");
+        return;
+    }
+
+    const winHorse = document.getElementById("win-select").value;
+    const winAmount = Number(document.getElementById("win-amount").value);
+    const placeHorse = document.getElementById("place-select").value;
+    const placeAmount = Number(document.getElementById("place-amount").value);
+    const wide1 = Number(document.getElementById("wide1").value);
+    const wide2 = Number(document.getElementById("wide2").value);
+    const wideAmount = Number(document.getElementById("wide-amount").value);
+
+    if (winAmount > 0 && winHorse === "0") {
+        alert("単勝の馬番を選択してください。");
+        return;
+    }
+    if (placeAmount > 0 && placeHorse === "0") {
+        alert("複勝の馬番を選択してください。");
+        return;
+    }
+    if (wideAmount > 0 && (wide1 === 0 || wide2 === 0 || wide1 === wide2)) {
+        alert("ワイドの馬番を正しく選択してください（異なる2頭が必要です）。");
+        return;
+    }
+
+    let payout = 0;
+    if(raceData.payouts.win[winHorse] && winAmount > 0) payout += winAmount * raceData.payouts.win[winHorse];
+    if(raceData.payouts.place[placeHorse] && placeAmount > 0) payout += placeAmount * raceData.payouts.place[placeHorse];
+
+    const combo = [wide1, wide2].sort((a,b)=>a-b).join("-");
+    if(raceData.payouts.wide[combo] && wideAmount > 0) payout += wideAmount * raceData.payouts.wide[combo];
+
+    const recovery = ((payout / total) * 100).toFixed(0);
+
+    document.getElementById("result-box").style.display = "block";
+    document.getElementById("result-text").innerText =
+        `${raceData.eventName}\n1着 ${raceData.result.first}番 / 2着 ${raceData.result.second}番 / 3着 ${raceData.result.third}番`;
+    document.getElementById("payout-display").innerText = Math.floor(payout);
+    document.getElementById("recovery-display").innerText = recovery;
+    
+    selectedFinishHorseNumbers = new Set(
+        [winHorse, placeHorse, wide1, wide2]
+            .filter(number => number && Number(number) !== 0)
+            .map(number => String(number))
+    );
+
+    renderDetailedResultTable();
+    document.getElementById("real-race").innerText = raceData.analysis.realRace;
+    document.getElementById("analysis-text").innerText = raceData.analysis.summary;
+
+
+    const turningList = document.getElementById("turning-points-list");
+    if (turningList) {
+        turningList.innerHTML = "";
+        (raceData.analysis.turningPoints || []).forEach(point => {
+            const card = document.createElement("div");
+            card.className = "turning-point-card";
+
+            const title = document.createElement("div");
+            title.className = "tp-title";
+            title.innerText = point.title;
+
+            const body = document.createElement("div");
+            body.innerHTML = '<span class="tp-horses">' + point.horses + '</span>：' + point.text;
+
+            card.appendChild(title);
+            card.appendChild(body);
+            turningList.appendChild(card);
+        });
+    }
+
+    const learningList = document.getElementById("learning-points");
+    learningList.innerHTML = "";
+    (raceData.analysis.learningPoints || []).forEach(point=>{
+        const li = document.createElement("li");
+        li.innerText = point;
+        learningList.appendChild(li);
+    });
+
+    localStorage.setItem(raceData.id + "_invest", total);
+    localStorage.setItem(raceData.id + "_payout", Math.floor(payout));
+    localStorage.setItem(raceData.id + "_recovery", recovery);
+    localStorage.setItem(raceData.id + "_winHorse", winHorse);
+    localStorage.setItem(raceData.id + "_winAmount", winAmount);
+    localStorage.setItem(raceData.id + "_placeHorse", placeHorse);
+    localStorage.setItem(raceData.id + "_placeAmount", placeAmount);
+    localStorage.setItem(raceData.id + "_wideCombo", combo);
+    localStorage.setItem(raceData.id + "_wideAmount", wideAmount);
+
+
+    if (raceData.legacyId) {
+        localStorage.setItem(raceData.legacyId + "_invest", total);
+        localStorage.setItem(raceData.legacyId + "_payout", Math.floor(payout));
+        localStorage.setItem(raceData.legacyId + "_recovery", recovery);
+    }
+
+
+    const scoreRecord = buildScoreRecord(total, payout, recovery, winHorse, winAmount, placeHorse, placeAmount, combo, wideAmount);
+    const scoreMemory = saveScoreMemory(scoreRecord);
+    renderScoreMemory(scoreMemory);
+    renderYoutubeSearchLink();
+
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+}
+
+function shareToX(){
+    const payout = document.getElementById("payout-display").innerText;
+    const recovery = document.getElementById("recovery-display").innerText;
+    const text =
+`競馬過去問ドリルに挑戦。
+
+馬名・開催年を隠したデータだけで、過去の名レースをあとから解いてみるゲームです。
+
+${raceData.title}
+払戻：${payout}円
+回収率：${recovery}%
+
+あなたならどう読む？
+#競馬過去問ドリル`;
+
+    const url = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(text);
+    window.open(url, "_blank");
+}
+</script>
+
+
+<!-- AUDIT_FIX_STAGE4_2017_ARIMA: finishOrder/realNames and selected prior-race/major-win texts fixed based on external data audit. -->
+
+<!-- AUDIT_FIX_STAGE4_REAUDIT_REPRESENTATIVE: representative-performance reaudit corrections applied. -->
+
+<!-- AUDIT_FIX_STAGE4_V25_DOUBLECHECK: stage1-5 double-check audit corrections applied. -->
+
+<!-- AUDIT_FIX_STAGE4_V27_FINAL: final audit object-level corrections applied. -->
+
+<!-- AUDIT_FIX_V28_CLEAN_REPRESENTATIVE_LABELS: race names removed from representative-performance display values. -->
+
+<!-- AUDIT_FIX_V33_FIRST_SCORE_MEMORY: first/latest/best score records saved with non-overwriting first score. -->
+
+<!-- AUDIT_FIX_V34_REP_LABEL_CLEANUP: cleaned compact representative-performance labels. -->
+
+<!-- AUDIT_FIX_V35_WINRACE_QUERY_CLEANUP: standardized representative-performance search keywords. -->
+
+<!-- AUDIT_FIX_V36_QUERY_NO_RUNNING_STYLE: winRaceQuery now uses course-only keywords without running style. -->
+
+<!-- AUDIT_FIX_V41_TURNING_POINTS: added race-level grouped turning point explanations. -->
+
+<!-- AUDIT_FIX_V42_YOUTUBE_SEARCH: added post-result YouTube search link for race footage. -->
+
+<!-- AUDIT_FIX_V43_YOUTUBE_SUBTLE: lowered visual priority of YouTube search link. -->
+</body>
+</html>

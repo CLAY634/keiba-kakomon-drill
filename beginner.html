@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>はじめての方へ｜競馬過去問ドリル</title>
+
+<style>
+body {
+    margin: 0;
+    padding: 20px;
+    background: #f3f4f6;
+    font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+    color: #222;
+}
+
+.container {
+    max-width: 920px;
+    margin: 0 auto;
+}
+
+.hero {
+    background: #fff;
+    padding: 28px;
+    border-radius: 14px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+    border-top: 6px solid #222;
+}
+
+.hero h1 {
+    margin: 0 0 10px 0;
+    font-size: 1.9rem;
+}
+
+.hero p {
+    margin: 0;
+    line-height: 1.8;
+    color: #444;
+}
+
+.card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+    border: 1px solid #e5e7eb;
+}
+
+.card h2 {
+    margin-top: 0;
+    padding-left: 12px;
+    border-left: 5px solid #222;
+    font-size: 1.25rem;
+}
+
+.card p,
+.card li {
+    line-height: 1.8;
+}
+
+.term-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.term {
+    background: #fafafa;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 14px;
+}
+
+.term b {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.flow {
+    counter-reset: step;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.flow li {
+    counter-increment: step;
+    background: #fafafa;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 14px 14px 14px 48px;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.flow li::before {
+    content: counter(step);
+    position: absolute;
+    left: 14px;
+    top: 14px;
+    width: 24px;
+    height: 24px;
+    background: #222;
+    color: #fff;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 24px;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.tip {
+    background: #fff9e6;
+    border: 1px solid #ffe0b2;
+    color: #5d4037;
+    padding: 16px;
+    border-radius: 10px;
+    line-height: 1.8;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-block;
+    text-decoration: none;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 18px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+}
+
+.btn-primary {
+    background: #0275d8;
+    color: #fff;
+}
+
+.btn-dark {
+    background: #111;
+    color: #fff;
+}
+
+.btn-light {
+    background: #f1f3f5;
+    color: #222;
+    border: 1px solid #ddd;
+}
+
+@media (max-width: 760px) {
+    body {
+        padding: 10px;
+    }
+
+    .hero {
+        padding: 20px;
+    }
+
+    .hero h1 {
+        font-size: 1.55rem;
+    }
+
+    .term-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .actions {
+        display: block;
+    }
+
+    .btn {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        margin-bottom: 8px;
+    }
+}
+
+.class-guide {
+  background: #f8fbff;
+  border: 1px solid #dbeafe;
+  border-radius: 12px;
+  padding: 18px;
+  margin: 20px 0;
+}
+.class-guide h2 {
+  margin-top: 0;
+}
+.class-rank-box {
+  background: #ffffff;
+  border-left: 5px solid #2563eb;
+  padding: 12px 14px;
+  margin: 14px 0;
+}
+.class-rank {
+  font-weight: 700;
+  line-height: 1.8;
+}
+.small-note {
+  font-size: 0.92em;
+  color: #555;
+  line-height: 1.7;
+}
+
+
+.time-guide {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 18px;
+  margin: 20px 0;
+}
+.time-guide h2 {
+  margin-top: 0;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header class="hero">
+    <p style="margin:0 0 10px 0;">
+        <a href="index.html" style="color:#0275d8;text-decoration:none;font-weight:bold;">← トップへ戻る</a>
+    </p>
+    <h1>はじめての方へ</h1>
+    <p>
+        競馬を始めたばかりでも大丈夫です。<br>
+        このページは、最初の1問を「なんとなく解ける」ようにするための簡単な説明です。
+    </p>
+</header>
+
+<section class="card">
+    <h2>このサイトは何？</h2>
+    <p>
+        競馬過去問ドリルは、過去の名レースを題材にした推理ゲームです。
+        馬名・開催年・レース名を隠したデータを見ながら、
+        「今回の条件に合っていそうな馬」を考えて遊びます。
+    </p>
+    <p>
+        未来のレースを当てるサイトではありません。
+        すでに終わったレースをあとから解き直して、展開・馬場・距離の見方に慣れていくサイトです。
+    </p>
+
+<section class="guide-section class-guide">
+  <h2>代表実績とクラス表記の見方</h2>
+  <p>
+    代表実績は、その馬がこのレース前までに残していた主な実績です。
+    着順表記がない場合は、基本的に1着を意味します。
+  </p>
+  <div class="class-rank-box">
+    <p><strong>強さの目安</strong></p>
+    <p class="class-rank">
+      G1 ＞ G2 ＞ G3 ＞ L（リステッド）＞ オープン ＞ 3勝クラス ＞ 2勝クラス ＞ 1勝クラス ＞ 未勝利
+    </p>
+  </div>
+  <ul>
+    <li><strong>東京芝2400m(G1)</strong>：東京芝2400mのG1を勝利</li>
+    <li><strong>中山芝2000m(G1 2着)</strong>：中山芝2000mのG1で2着</li>
+    <li><strong>阪神芝2200m(L 1着)</strong>：阪神芝2200mのリステッド競走で1着</li>
+    <li><strong>中山芝2200m(1勝クラス)</strong>：中山芝2200mの1勝クラスを勝利</li>
+  </ul>
+  <p class="small-note">
+    ※ Lは「リステッド競走」の略です。重賞（G1/G2/G3）ではありませんが、オープン特別の中でも格が明確に示されたレースです。
+  </p>
+</section>
+
+<section class="guide-section time-guide">
+  <h2>まずは1問だけでOK</h2>
+  <p>1問あたりの目安は約5〜10分です。まずは1問だけ解いて、予想・結果・解説まで見るのがおすすめです。</p>
+  <p>まずは1問だけ解いて、結果画面の解説まで見るのがおすすめです。</p>
+</section>
+
+
+</section>
+
+<section class="card">
+    <h2>どう遊ぶ？</h2>
+    <ol class="flow">
+        <li>出馬表を見て、気になる馬を探します。</li>
+        <li>単勝・複勝・ワイドに、合計1,000円になるように配分します。</li>
+        <li>「この買い方で結果を見る」を押します。</li>
+        <li>正解後に、実際のレース名と実馬名つきの解説が出ます。</li>
+    </ol>
+    <div class="tip">
+        最初から完璧に読む必要はありません。<br>
+        迷った時は、各問題の「4頭ヒント」を開いて、そこから考えても大丈夫です。
+    </div>
+</section>
+
+<section class="card">
+    <h2>まず見るデータはこれだけでOK</h2>
+    <div class="term-grid">
+        <div class="term">
+            <b>オッズ</b>
+            人気の目安です。数字が小さいほど人気があります。ただし、人気馬が必ず正解とは限りません。
+        </div>
+        <div class="term">
+            <b>上がりタイム</b>
+            最後の直線付近でどれだけ速く走ったかの目安です。数字が小さいほど速い脚を使っています。
+        </div>
+        <div class="term">
+            <b>馬体重</b>
+            馬の体重です。大きく増えたり減ったりしている時は、調子や成長のヒントになることがあります。
+        </div>
+        <div class="term">
+            <b>騎手複勝率</b>
+            その騎手が3着以内に来る割合の目安です。絶対ではありませんが、判断材料のひとつになります。
+        </div>
+        <div class="term">
+            <b>通過順</b>
+            レース中にどの位置にいたかです。たとえば「1-1-1」なら逃げ、「10-10-8」なら後ろから進めたイメージです。
+        </div>
+        <div class="term">
+            <b>今回のコース</b>
+            同じ距離でも、競馬場によって特徴が違います。迷ったら「今回のコース特徴を検索」を押してみてください。
+        </div>
+    </div>
+</section>
+
+<section class="card">
+    <h2>買い方の意味</h2>
+    <div class="term-grid">
+        <div class="term">
+            <b>単勝</b>
+            選んだ馬が1着なら当たりです。シンプルですが、難しめです。
+        </div>
+        <div class="term">
+            <b>複勝</b>
+            選んだ馬が3着以内なら当たりです。初心者が最初に試しやすい買い方です。
+        </div>
+        <div class="term">
+            <b>ワイド</b>
+            選んだ2頭がどちらも3着以内なら当たりです。順位は関係ありません。
+        </div>
+        <div class="term">
+            <b>おすすめ</b>
+            迷ったら、まずは複勝かワイドを使ってみてください。「上位に来そうな馬」を探す練習になります。
+        </div>
+    </div>
+</section>
+
+<section class="card">
+    <h2>迷った時の考え方</h2>
+    <p>
+        迷ったら、次の順番で見てみると考えやすいです。
+    </p>
+    <ol>
+        <li>今回のテーマを見る。展開、馬場、距離、位置取りなど。</li>
+        <li>人気馬に弱点がないか探す。</li>
+        <li>今回の条件に合いそうな馬を1〜3頭選ぶ。</li>
+        <li>単勝で勝負するか、複勝・ワイドで広めに見るか決める。</li>
+    </ol>
+    <div class="tip">
+        このゲームでは、外れても問題ありません。<br>
+        大事なのは「なぜその結果になったのか」を解説で確認することです。
+    </div>
+</section>
+
+<section class="card">
+    <h2>このサイトについて</h2>
+    <p>
+        本サービスは、過去の競馬レースを題材にした学習・分析ゲームです。
+        実際の馬券購入を推奨するものではありません。
+        表示される配分・払戻は、ゲーム内のシミュレーションとして扱っています。<br>データは確認しながら作成していますが、誤りが含まれる可能性があります。着順・払戻・馬名対応などに誤りを見つけた場合は、XのDMまでご連絡ください。 <a href="https://x.com/susugigawa" target="_blank" style="color:#0275d8;font-weight:bold;">@susugigawa</a>
+    </p>
+</section>
+
+<section class="card">
+    <div class="actions">
+        <a class="btn btn-primary" href="stage1.html">第1問からやってみる</a>
+        <a class="btn btn-dark" href="index.html">過去問一覧へ戻る</a>
+        <a class="btn btn-light" href="shindan.html">タイプ診断を見る</a>
+    </div>
+</section>
+
+</div>
+
+
+<!-- AUDIT_FIX_V38_CLASS_GUIDE: added class/rank explanation for representative performance labels. -->
+
+<!-- AUDIT_FIX_V39_TIME_ESTIMATE: added expected play time note. -->
+
+<!-- AUDIT_FIX_V40_TIME_NOTE_INTEGRATED: softened play-time guide wording. -->
+</body>
+</html>
