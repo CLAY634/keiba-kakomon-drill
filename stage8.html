@@ -341,6 +341,69 @@ button{ cursor:pointer; }
     margin-top: 3px;
 }
 
+
+/* v45: compact prediction area + checked horse summary */
+.bet-section,
+.prediction-section,
+#betting-section,
+#prediction-section {
+    margin-top: 18px !important;
+    padding-top: 18px !important;
+    padding-bottom: 18px !important;
+}
+.selected-horses-panel {
+    margin: 10px 0 14px;
+    padding: 10px 12px;
+    background: #f8fafc;
+    border: 1px solid #dbe3ea;
+    border-left: 4px solid #64748b;
+    border-radius: 10px;
+    line-height: 1.55;
+}
+.selected-horses-title {
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 4px;
+}
+.selected-horses-list {
+    color: #111827;
+    font-weight: 600;
+}
+.selected-horses-empty {
+    color: #64748b;
+    font-weight: 400;
+}
+@media (max-width: 560px) {
+    .bet-section,
+    .prediction-section,
+    #betting-section,
+    #prediction-section {
+        margin-top: 14px !important;
+        padding: 14px 12px !important;
+    }
+    .selected-horses-panel {
+        font-size: 0.92em;
+        padding: 9px 10px;
+    }
+}
+
+
+.stage-help-link {
+    margin: 10px 0 14px;
+    font-size: 0.94em;
+    color: #475569;
+}
+.stage-help-link a {
+    color: #2563eb;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+.stage-help-link small {
+    color: #64748b;
+    font-weight: 400;
+}
+
 </style>
 </head>
 
@@ -353,6 +416,11 @@ button{ cursor:pointer; }
         <a href="index.html" style="color: #0275d8; text-decoration: none; font-weight: bold;">← ステージ選択へ戻る</a>
     </p>
     <h1 id="race-title"></h1>
+
+<div class="stage-help-link">
+    操作や用語に迷ったら：<a href="beginner.html" target="_blank" rel="noopener noreferrer">はじめての方へ</a> <small>（別タブ）</small>
+</div>
+
     <p style="margin: 0;">
         <span id="race-subtitle" style="font-weight: bold;"></span>
         <a id="course-search-link" href="" target="_blank" style="margin-left: 15px; font-size: 0.9em; color: #d9534f; text-decoration: underline; font-weight: bold;">🔍今回のコース特徴を検索</a>
@@ -425,6 +493,13 @@ button{ cursor:pointer; }
 <section style="margin-bottom: 30px;">
 <div style="margin-top:30px; background-color: #fafafa; padding: 20px; border: 1px solid #dcdcdc; border-radius: 5px;">
 <h2>予想入力 <span style="font-size: 0.7em; font-weight: normal; color: #666;">※予算総額1,000円</span></h2>
+    <div id="selected-horses-panel" class="selected-horses-panel">
+        <div class="selected-horses-title">チェック中の馬</div>
+        <div id="selected-horses-list" class="selected-horses-list">
+            <span class="selected-horses-empty">まだチェックされていません。</span>
+        </div>
+    </div>
+
 
 <p>
     <label style="display:inline-block; width:120px;"><b>
@@ -1280,6 +1355,36 @@ function renderYoutubeSearchLink() {
 }
 
 
+
+function updateSelectedHorsesPanel() {
+    const panel = document.getElementById("selected-horses-list");
+    if (!panel || !Array.isArray(raceData.horses)) return;
+
+    const checked = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
+        .map(input => {
+            const raw = input.value || input.dataset.number || input.dataset.horseNumber || input.getAttribute("data-number");
+            const n = parseInt(raw, 10);
+            if (!Number.isFinite(n)) return null;
+            const horse = raceData.horses.find(h => Number(h.number) === n);
+            if (!horse) return `${n}番`;
+            return `${n}番 ${horse.name}`;
+        })
+        .filter(Boolean);
+
+    if (checked.length === 0) {
+        panel.innerHTML = '<span class="selected-horses-empty">まだチェックされていません。</span>';
+    } else {
+        panel.textContent = checked.join(" / ");
+    }
+}
+
+document.addEventListener("change", function(e) {
+    if (e.target && e.target.matches('input[type="checkbox"]')) {
+        updateSelectedHorsesPanel();
+    }
+});
+document.addEventListener("DOMContentLoaded", updateSelectedHorsesPanel);
+
 function judgeRace(){
     const total = Number(document.getElementById("win-amount").value) +
                   Number(document.getElementById("place-amount").value) +
@@ -1432,5 +1537,9 @@ ${raceData.title}
 <!-- AUDIT_FIX_V42_YOUTUBE_SEARCH: added post-result YouTube search link for race footage. -->
 
 <!-- AUDIT_FIX_V43_YOUTUBE_SUBTLE: lowered visual priority of YouTube search link. -->
+
+<!-- AUDIT_FIX_V45_SELECTED_HORSES: added checked-horse summary near prediction inputs and compacted spacing. -->
+
+<!-- AUDIT_FIX_V46_BEGINNER_LINK: added beginner guide link opening in a new tab. -->
 </body>
 </html>
