@@ -1,0 +1,19 @@
+v58 public type-card package
+
+Purpose:
+- Public-ready package with type-specific share card pages.
+- Based on v56, not v57, so debug preset panel is not included.
+
+Main changes:
+- index.html remains the home screen.
+- stage1.html remains the v55 data-separated SPA prototype.
+- shindan.html uses type-specific share URLs.
+- share/*.html pages were added for each diagnosis type.
+- assets/ogp/*.png images were added for X/Twitter link card previews.
+- Top CTA wording was adjusted:
+  - 第1問からやってみる -> まず1問だけ試す
+  - 初級3問から始める -> 3問解いてタイプ診断へ
+
+Important:
+- The share card pages use relative image paths in meta tags.
+- For the most reliable X/Twitter card rendering after final deployment, absolute URLs can be inserted once the final GitHub Pages or Netlify URL is fixed.

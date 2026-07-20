@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>競馬過去問ドリル｜予想タイプ診断</title>
+<meta name="description" content="馬名・レース名・開催年を伏せた過去問結果から、競馬予想の見方と買い方の傾向を診断します。">
+<meta property="og:title" content="競馬過去問ドリル｜予想タイプ診断">
+<meta property="og:description" content="匿名化された実在レースで予想を練習。3問でタイプ診断もできます。">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/ogp/top.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="競馬過去問ドリル｜予想タイプ診断">
+<meta name="twitter:description" content="馬名・レース名を伏せた実在レースで、先入観なしに予想練習。">
+<meta name="twitter:image" content="assets/ogp/top.png">
+
+<style>
+:root {
+    --bg: #f3f4f6;
+    --card: #ffffff;
+    --ink: #1f2937;
+    --muted: #6b7280;
+    --line: #e5e7eb;
+    --dark: #111827;
+    --blue: #2563eb;
+    --green: #16a34a;
+    --red: #dc2626;
+    --amber: #b45309;
+}
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    padding: 20px;
+    background: var(--bg);
+    font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+    color: var(--ink);
+}
+.container { max-width: 980px; margin: 0 auto; }
+.hero, .card {
+    background: var(--card);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.07);
+    margin-bottom: 20px;
+    border: 1px solid var(--line);
+}
+.hero {
+    border-top: 7px solid var(--dark);
+}
+.hero-kicker {
+    display: inline-block;
+    font-size: .85rem;
+    font-weight: bold;
+    letter-spacing: .06em;
+    color: #fff;
+    background: var(--dark);
+    border-radius: 999px;
+    padding: 6px 12px;
+    margin-bottom: 12px;
+}
+.hero h1 {
+    margin: 0 0 10px;
+    font-size: clamp(1.8rem, 4vw, 2.45rem);
+    line-height: 1.25;
+}
+.hero p, .notice, .type-desc, .type-detail {
+    line-height: 1.8;
+    color: #4b5563;
+}
+.hero p { margin: 0 0 8px; }
+.hero strong { color: var(--dark); }
+.card h2 {
+    margin: 0 0 14px;
+    padding-left: 12px;
+    border-left: 5px solid var(--dark);
+    font-size: 1.22rem;
+}
+.mode-card {
+    background: #f7fbff;
+    border: 1px solid #cfe2ff;
+    border-left: 5px solid var(--blue);
+    border-radius: 14px;
+    padding: 16px;
+    margin: 14px 0 4px;
+}
+.mode-card h2 {
+    border: none;
+    padding: 0;
+    margin: 0 0 6px;
+    font-size: 1.12rem;
+}
+.mode-card p { margin: 0; line-height: 1.75; color: #475569; }
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+.summary-box {
+    background: #fafafa;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    padding: 14px;
+    text-align: center;
+}
+.summary-label {
+    color: var(--muted);
+    font-size: .85rem;
+    margin-bottom: 6px;
+}
+.summary-value {
+    font-size: 1.35rem;
+    font-weight: bold;
+}
+.trend-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+.trend-card {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 15px;
+    background: #fbfbfb;
+}
+.trend-card h3 {
+    margin: 0 0 8px;
+    font-size: 1rem;
+}
+.trend-card p {
+    margin: 0;
+    color: #4b5563;
+    line-height: 1.7;
+}
+.type-result {
+    background: linear-gradient(180deg, #ffffff, #f8fafc);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 20px;
+}
+.badge {
+    display: inline-block;
+    border: 1px solid var(--line);
+    background: #f9fafb;
+    color: #374151;
+    border-radius: 999px;
+    padding: 5px 10px;
+    font-size: .83rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.type-title {
+    text-align: center;
+    font-size: clamp(1.45rem, 4vw, 2.1rem);
+    line-height: 1.35;
+    color: var(--blue);
+    margin: 8px 0 12px;
+}
+.type-desc {
+    font-size: 1.02rem;
+    margin: 0;
+}
+.type-detail-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 16px;
+}
+.type-detail {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 14px;
+}
+.type-detail b {
+    display: block;
+    color: var(--dark);
+    margin-bottom: 4px;
+}
+.bet-bar-wrap { margin-top: 10px; }
+.bet-bar {
+    display: flex;
+    height: 18px;
+    overflow: hidden;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: #eef2f7;
+}
+.bet-win { background: #111827; }
+.bet-place { background: #6b7280; }
+.bet-wide { background: #2563eb; }
+.bet-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    margin-top: 8px;
+    color: #4b5563;
+    font-size: .88rem;
+}
+.legend-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 999px;
+    margin-right: 4px;
+    vertical-align: -1px;
+}
+.stage-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+}
+.stage-table th, .stage-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+    font-size: .93rem;
+}
+.stage-table th { background: #f5f5f5; }
+.stage-table td:first-child { text-align: left; min-width: 160px; }
+.recovery-high { color: var(--red); }
+.recovery-mid { color: var(--blue); }
+.recovery-low { color: #555; }
+.map-wrap {
+    width: 320px;
+    height: 320px;
+    border: 2px solid #333;
+    margin: 0 auto;
+    position: relative;
+    background: #fafafa;
+    border-radius: 10px;
+}
+.axis-x {
+    position: absolute;
+    top: 160px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: #888;
+}
+.axis-y {
+    position: absolute;
+    top: 0;
+    left: 160px;
+    width: 1px;
+    height: 100%;
+    background: #888;
+}
+.axis-label {
+    position: absolute;
+    font-size: .8rem;
+    color: #666;
+}
+.you-dot {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background: var(--red);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 5px rgba(220,38,38,.14);
+}
+.you-label {
+    position: absolute;
+    font-size: .8rem;
+    color: var(--red);
+    font-weight: bold;
+    transform: translate(10px, -20px);
+    white-space: nowrap;
+}
+.actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+.btn {
+    display: inline-block;
+    text-decoration: none;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    font-size: .95rem;
+}
+.btn-dark { background: #111; color: #fff; }
+.btn-primary { background: var(--blue); color: #fff; }
+.btn-light { background: #f1f3f5; color: #222; border: 1px solid #ddd; }
+.btn-ghost { background: #fff; color: #222; border: 1px solid #d1d5db; }
+.share-preview {
+    white-space: pre-wrap;
+    background: #0f172a;
+    color: #e5e7eb;
+    border-radius: 12px;
+    padding: 14px;
+    line-height: 1.7;
+    font-size: .93rem;
+    margin: 12px 0 0;
+}
+.small-note {
+    color: var(--muted);
+    font-size: .88rem;
+    line-height: 1.7;
+}
+@media (max-width: 760px) {
+    body { padding: 10px; }
+    .hero, .card { padding: 18px; }
+    .summary-grid { grid-template-columns: 1fr 1fr; }
+    .trend-grid { grid-template-columns: 1fr; }
+    .type-detail-list { grid-template-columns: 1fr; }
+    .map-wrap { width: 290px; height: 290px; }
+    .axis-x { top: 145px; }
+    .axis-y { left: 145px; }
+    .stage-table { display: block; overflow-x: auto; white-space: nowrap; }
+    .actions { display: block; }
+    .btn { display: block; width: 100%; margin-bottom: 8px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<header class="hero">
+    <span class="hero-kicker">匿名化レースで診断</span>
+    <h1>競馬予想タイプ診断</h1>
+    <p><strong>馬名・レース名・開催年を伏せた過去問</strong>の結果から、あなたの予想の見方を診断します。</p>
+    <p>回収率だけでなく、単勝・複勝・ワイドの配分、的中率、買い方の偏りを見て、予想タイプ・傾向・次に意識するポイントを表示します。</p>
+    <div class="mode-card" id="diagnosis-mode-card">
+        <h2 id="diagnosis-mode-title">タイプ診断</h2>
+        <p id="diagnosis-mode-description">プレイ結果から、あなたの読み方のクセを診断します。</p>
+    </div>
+</header>
+
+<section class="card">
+    <h2>診断サマリー</h2>
+    <div class="summary-grid">
+        <div class="summary-box"><div class="summary-label">プレイ済み</div><div class="summary-value"><span id="played-count">0</span>問</div></div>
+        <div class="summary-box"><div class="summary-label">的中ステージ</div><div class="summary-value"><span id="hit-count">0</span>問</div></div>
+        <div class="summary-box"><div class="summary-label">総払戻</div><div class="summary-value"><span id="total-payout">0</span>円</div></div>
+        <div class="summary-box"><div class="summary-label">総回収率</div><div class="summary-value"><span id="total-recovery">0</span>%</div></div>
+    </div>
+    <p id="evaluation-text" style="font-weight:bold;margin-top:16px;">成績評価：算出中...</p>
+    <p id="confidence-text" class="small-note"></p>
+</section>
+
+<section class="card">
+    <h2>あなたの診断タイプ</h2>
+    <div class="type-result">
+        <div style="text-align:center;"><span class="badge" id="diagnosis-badge">診断中</span></div>
+        <h3 id="type-title" class="type-title">診断中...</h3>
+        <p id="type-desc" class="type-desc"></p>
+        <div class="type-detail-list">
+            <div class="type-detail"><b>読み方の傾向</b><span id="type-tendency"></span></div>
+            <div class="type-detail"><b>次に意識すること</b><span id="type-advice"></span></div>
+        </div>
+    </div>
+</section>
+
+<section class="card">
+    <h2>買い方の傾向</h2>
+    <div class="trend-grid">
+        <div class="trend-card">
+            <h3>主な券種配分</h3>
+            <p id="main-bet-style">算出中...</p>
+            <div class="bet-bar-wrap">
+                <div class="bet-bar" aria-label="券種配分">
+                    <div id="bar-win" class="bet-win" style="width:0%"></div>
+                    <div id="bar-place" class="bet-place" style="width:0%"></div>
+                    <div id="bar-wide" class="bet-wide" style="width:0%"></div>
+                </div>
+                <div class="bet-legend">
+                    <span><span class="legend-dot bet-win"></span>単勝 <b id="win-share">0</b>%</span>
+                    <span><span class="legend-dot bet-place"></span>複勝 <b id="place-share">0</b>%</span>
+                    <span><span class="legend-dot bet-wide"></span>ワイド <b id="wide-share">0</b>%</span>
+                </div>
+            </div>
+        </div>
+        <div class="trend-card">
+            <h3>当たり方</h3>
+            <p id="hit-style">算出中...</p>
+        </div>
+        <div class="trend-card">
+            <h3>診断メモ</h3>
+            <p id="diagnosis-memo">算出中...</p>
+        </div>
+    </div>
+</section>
+
+<section class="card">
+    <h2>予想タイプマッピング</h2>
+    <div class="map-wrap">
+        <div class="axis-x"></div><div class="axis-y"></div>
+        <div class="axis-label" style="top:8px;left:170px;">一点集中</div>
+        <div class="axis-label" style="bottom:8px;left:170px;">分散・保険</div>
+        <div class="axis-label" style="top:170px;left:8px;">本命寄り</div>
+        <div class="axis-label" style="top:170px;right:8px;">穴・妙味寄り</div>
+        <div id="you-dot" class="you-dot"></div><div id="you-label" class="you-label">あなた</div>
+    </div>
+    <p style="text-align:center;color:#666;font-size:.9rem;margin-top:12px;">横軸：本命寄り ↔ 穴・妙味寄り / 縦軸：分散・保険 ↔ 一点集中</p>
+</section>
+
+<section class="card">
+    <h2>ステージ別成績</h2>
+    <p class="small-note">横に長い場合は左右にスクロールできます。配分は「単勝 / 複勝 / ワイド」の順です。</p>
+    <table class="stage-table">
+        <thead><tr><th>ステージ</th><th>テーマ</th><th>配分</th><th>払戻</th><th>回収率</th><th>券種配分</th><th>状態</th></tr></thead>
+        <tbody id="stage-result-body"></tbody>
+    </table>
+</section>
+
+<section class="card">
+    <h2>シェア</h2>
+    <p class="notice">診断タイプをXへ投稿できます。過去レースを使った予想練習の結果であり、実際の馬券購入を推奨するものではありません。</p>
+    <div class="share-preview" id="share-preview">診断結果を作成中...</div>
+    <div class="actions" style="margin-top:14px;">
+        <button type="button" class="btn btn-dark" onclick="shareToX()">診断結果をXにポスト</button>
+        <button type="button" class="btn btn-ghost" onclick="copyShareText()">結果テキストをコピー</button>
+        <a href="index.html" class="btn btn-primary">ホームへ戻る</a>
+        <button type="button" class="btn btn-light" onclick="resetProgress()">記録をリセット</button>
+    </div>
+</section>
+</div>
+
+<script>
+const urlParamsForDiagnosis = new URLSearchParams(window.location.search);
+const diagnosisMode = urlParamsForDiagnosis.get("mode") || "all";
+const diagnosisMaxStage = diagnosisMode === "beginner" ? 3 : 10;
+
+const stages = [
+    { id:"stage1", legacyId:"race1", number:1, label:"第1問", theme:"展開・重馬場", title:"前が速すぎた日の差し脚" },
+    { id:"stage2", legacyId:"race2", number:2, label:"第2問", theme:"瞬発力・距離適性", title:"最後の200mで問われる適性" },
+    { id:"stage3", legacyId:"race3", number:3, label:"第3問", theme:"持久力・ハイペース", title:"良馬場に潜む消耗戦" },
+    { id:"stage4", legacyId:"race4", number:4, label:"第4問", theme:"小回り・内枠", title:"小回り2500mの位置取り勝負" },
+    { id:"stage5", legacyId:"race5", number:5, label:"第5問", theme:"位置取り・斤量", title:"内で我慢した者の勝負" },
+    { id:"stage6", legacyId:"race6", number:6, label:"第6問", theme:"長距離・折り合い", title:"3000mで試される折り合い" },
+    { id:"stage7", legacyId:"race7", number:7, label:"第7問", theme:"高速決着・ペース判断", title:"速すぎる流れを疑うべきか" },
+    { id:"stage8", legacyId:"race8", number:8, label:"第8問", theme:"稍重・パワー", title:"重い芝が常識を壊す" },
+    { id:"stage9", legacyId:"race9", number:9, label:"第9問", theme:"逃げ・大穴", title:"止まらない先頭と大穴の影" },
+    { id:"stage10", legacyId:"race10", number:10, label:"第10問", theme:"名勝負・逃げ", title:"止まらない先頭を捕まえられるか" }
+];
+
+let diagnosisResult = {
+    cleanTitle: "未診断",
+    title: "【 未診断 】",
+    recovery: 0,
+    totalInvest: 0,
+    totalPayout: 0,
+    playedCount: 0,
+    hitCount: 0,
+    hitRate: 0,
+    mainBetStyle: "未集計",
+    shareText: ""
+};
+
+function getStageNumberForDiagnosis(stage) {
+    if (stage.number) return Number(stage.number);
+    const match = String(stage.id || "").match(/stage(\d+)/);
+    return match ? Number(match[1]) : 999;
+}
+
+function updateDiagnosisModeDisplay() {
+    const title = document.getElementById("diagnosis-mode-title");
+    const desc = document.getElementById("diagnosis-mode-description");
+    if (!title || !desc) return;
+
+    if (diagnosisMode === "beginner") {
+        title.innerText = "初級3問診断";
+        desc.innerText = "第1問〜第3問だけを対象にした、公開前でも触りやすいライト診断です。短時間で予想のクセを見られます。";
+    } else {
+        title.innerText = "総合10問診断";
+        desc.innerText = "第1問〜第10問の結果を使って、回収率・的中率・券種配分から予想タイプを総合的に診断します。";
+    }
+}
+
+function getSavedValue(stage, suffix) {
+    const primary = localStorage.getItem(stage.id + "_" + suffix);
+    const legacy = localStorage.getItem(stage.legacyId + "_" + suffix);
+    if (primary !== null) return Number(primary) || 0;
+    if (legacy !== null) return Number(legacy) || 0;
+    return 0;
+}
+
+function getStageResults() {
+    return stages
+        .filter(stage => getStageNumberForDiagnosis(stage) <= diagnosisMaxStage)
+        .map(stage => {
+            const invest = getSavedValue(stage, "invest");
+            const payout = getSavedValue(stage, "payout");
+            const recovery = invest > 0 ? Math.round((payout / invest) * 100) : 0;
+            const winAmount = getSavedValue(stage, "winAmount");
+            const placeAmount = getSavedValue(stage, "placeAmount");
+            const wideAmount = getSavedValue(stage, "wideAmount");
+            return {
+                ...stage,
+                invest,
+                payout,
+                recovery,
+                winAmount,
+                placeAmount,
+                wideAmount,
+                played: invest > 0,
+                hit: payout > 0
+            };
+        });
+}
+
+function pct(value, total) {
+    if (!total) return 0;
+    return Math.round((value / total) * 100);
+}
+
+function cleanTypeTitle(title) {
+    return title.replace(/[【】]/g, "").trim();
+}
+
+function buildStats(results) {
+    const played = results.filter(r => r.played);
+    const playedCount = played.length;
+    const totalInvest = played.reduce((sum, r) => sum + r.invest, 0);
+    const totalPayout = played.reduce((sum, r) => sum + r.payout, 0);
+    const totalRecovery = totalInvest > 0 ? Math.round((totalPayout / totalInvest) * 100) : 0;
+    const hitCount = played.filter(r => r.hit).length;
+    const hitRate = playedCount > 0 ? Math.round((hitCount / playedCount) * 100) : 0;
+    const bestRecovery = played.reduce((max, r) => Math.max(max, r.recovery), 0);
+    const totalWinAmount = played.reduce((sum, r) => sum + r.winAmount, 0);
+    const totalPlaceAmount = played.reduce((sum, r) => sum + r.placeAmount, 0);
+    const totalWideAmount = played.reduce((sum, r) => sum + r.wideAmount, 0);
+    const totalBetAmount = totalWinAmount + totalPlaceAmount + totalWideAmount || totalInvest;
+    const winShare = pct(totalWinAmount, totalBetAmount);
+    const placeShare = pct(totalPlaceAmount, totalBetAmount);
+    const wideShare = pct(totalWideAmount, totalBetAmount);
+
+    let mainBetStyle = "未集計";
+    let mainShare = 0;
+    [
+        ["単勝重視", winShare],
+        ["複勝重視", placeShare],
+        ["ワイド重視", wideShare]
+    ].forEach(([label, share]) => {
+        if (share > mainShare) {
+            mainBetStyle = label;
+            mainShare = share;
+        }
+    });
+
+    return {
+        played,
+        playedCount,
+        totalInvest,
+        totalPayout,
+        totalRecovery,
+        hitCount,
+        hitRate,
+        bestRecovery,
+        totalWinAmount,
+        totalPlaceAmount,
+        totalWideAmount,
+        totalBetAmount,
+        winShare,
+        placeShare,
+        wideShare,
+        mainBetStyle,
+        mainShare
+    };
+}
+
+function judgeType(stats) {
+    const s = stats;
+
+    if (s.playedCount === 0) {
+        return {
+            title: "【 未出走のパドック待機型 】",
+            slug: "not-started",
+            badge: "まずは1問",
+            desc: "まだ診断に使えるプレイ記録がありません。まずは1問解くと、匿名化された実在レースから予想タイプを診断できます。",
+            tendency: "現時点では読み方の傾向は未集計です。",
+            advice: "トップから第1問を解き、診断ページに戻ってください。初級3問まで解くと、より見える傾向が増えます。",
+            x: 160, y: 160
+        };
+    }
+
+    if (s.totalRecovery >= 180 && s.hitCount >= 1) {
+        return {
+            title: "【 展開読み差し馬ハンター型 】",
+            slug: "high-return",
+            badge: "高回収・妙味型",
+            desc: "展開や馬場のズレを拾って、人気だけでは見えにくい馬を選べています。匿名化された状態でも条件の違和感を見つける力が強いタイプです。",
+            tendency: "本命だけでなく、条件が噛み合う馬を拾いにいく傾向があります。回収率の伸び方を見る限り、ハマった時の破壊力があります。",
+            advice: "一撃の精度を残しつつ、外したレースで何を重く見すぎたかを確認すると、偶然ではなく再現性に近づきます。",
+            x: 238, y: 72
+        };
+    }
+
+    if (s.wideShare >= 45 && s.hitRate >= 35) {
+        return {
+            title: "【 ワイド保険の安定派 】",
+            slug: "wide-stable",
+            badge: "分散・安定型",
+            desc: "ワイドを厚めに使いながら、複数の可能性を残して考えるタイプです。大きな一点勝負よりも、展開のズレを保険込みで拾う読み方に向いています。",
+            tendency: "軸を決め切るよりも、候補馬同士の関係でレースを見ています。崩れにくい一方で、回収率を伸ばすには強弱をつける余地があります。",
+            advice: "毎回ワイドに逃がすのではなく、『今回は1頭軸でよいか』を先に判断すると、配分の納得感が上がります。",
+            x: 190, y: 225
+        };
+    }
+
+    if (s.totalRecovery >= 110 && s.hitRate >= 35) {
+        return {
+            title: "【 妙味を拾う条件適性派 】",
+            slug: "condition-fit",
+            badge: "条件読み型",
+            desc: "展開・馬場・コース適性を見ながら、回収率と的中の両方を狙えています。派手な大穴狙いではなく、条件が合う馬を現実的に拾うタイプです。",
+            tendency: "一発狙いに寄りすぎず、条件の合う馬を探すバランスがあります。初心者の予想練習としてはかなり良い形です。",
+            advice: "次は『馬場』『展開』『距離適性』のうち、どれを最重要にしたかをレースごとにメモすると、読み方が安定します。",
+            x: 203, y: 122
+        };
+    }
+
+    if (s.hitRate >= 45 && s.totalRecovery < 110) {
+        return {
+            title: "【 本命軸の堅実回収型 】",
+            slug: "favorite-safe",
+            badge: "的中重視型",
+            desc: "大崩れしにくい軸馬を選ぶ力があります。一方で、回収率を伸ばすには人気馬の不安材料や、条件替わりで浮上する馬をもう少し疑う必要があります。",
+            tendency: "当てにいく意識が強く、極端な穴狙いには振れにくいタイプです。予想の入口としては安定しています。",
+            advice: "本命を決めたあとに、『この本命が負けるなら何が原因か』を1つ書き出すと、相手候補の選び方が良くなります。",
+            x: 108, y: 142
+        };
+    }
+
+    if (s.hitCount === 0 || (s.winShare >= 55 && s.hitRate <= 25)) {
+        return {
+            title: "【 穴馬ロマン追走型 】",
+            slug: "romance",
+            badge: "攻めすぎ注意",
+            desc: "狙いは大胆です。人気や安全圏よりも、展開がハマった時の大きなリターンを見にいく傾向があります。",
+            tendency: "単勝・大穴寄りの発想が出やすく、当たれば強い一方で、軸の安定感が不足しやすいタイプです。",
+            advice: "穴を狙う前に、最低限『展開が向く根拠』『馬場が合う根拠』の2つが揃っているか確認してください。",
+            x: 247, y: 212
+        };
+    }
+
+    return {
+        title: "【 修行中のデータ見習い型 】",
+            slug: "training",
+        badge: "練習中",
+        desc: "データは見ていますが、結果に直結する材料の優先順位がまだ固まりきっていない段階です。予想練習としては正常な途中経過です。",
+        tendency: "展開・脚質・馬場・コース適性のどれを重視するかがレースごとに揺れている可能性があります。",
+        advice: "次に解く時は、最初に『今回一番大事だと思う要素』を1つ決めてから馬を選ぶと、答え合わせがしやすくなります。",
+        x: 155, y: 220
+    };
+}
+
+function getBetStyleText(stats) {
+    if (stats.playedCount === 0) return "まだ配分データがありません。";
+    if (stats.mainBetStyle === "ワイド重視") return `ワイド重視。候補を1頭に絞り切らず、相手関係で拾う買い方です。ワイド比率は${stats.wideShare}%です。`;
+    if (stats.mainBetStyle === "複勝重視") return `複勝重視。軸馬の安定感を見て、着内可能性を拾う買い方です。複勝比率は${stats.placeShare}%です。`;
+    if (stats.mainBetStyle === "単勝重視") return `単勝重視。勝ち切る馬を選びにいく買い方です。単勝比率は${stats.winShare}%です。`;
+    return "配分傾向を集計中です。";
+}
+
+function getHitStyleText(stats) {
+    if (stats.playedCount === 0) return "まだ的中データがありません。";
+    if (stats.hitRate >= 60) return `的中率${stats.hitRate}%で、比較的安定して結果につながっています。`;
+    if (stats.hitRate >= 30) return `的中率${stats.hitRate}%です。まだ振れはありますが、狙いどころは作れています。`;
+    return `的中率${stats.hitRate}%です。現状はやや攻め寄りか、重要材料の優先順位がズレている可能性があります。`;
+}
+
+function getDiagnosisMemo(stats, type) {
+    if (stats.playedCount === 0) return "初級3問だけでも診断できます。まずは1問だけ試してください。";
+    if (diagnosisMode === "beginner" && stats.playedCount < 3) return "初級診断としてはまだ仮判定です。3問まで解くと、タイプ判定の信頼度が少し上がります。";
+    if (diagnosisMode !== "beginner" && stats.playedCount < 10) return "総合10問診断としては途中経過です。全10問まで進めると、券種配分と的中傾向がより見えます。";
+    return `${cleanTypeTitle(type.title)}として、今の予想傾向はかなり見えています。スクショやシェアにも向いた判定です。`;
+}
+
+function buildShareText(stats, type) {
+    const diagnosisLabel = diagnosisMode === "beginner" ? "初級3問" : "総合10問";
+    const shareUrl = getShareUrl(type.slug);
+    const lines = [
+        `競馬過去問ドリル ${diagnosisLabel}診断`,
+        "",
+        `${type.title}`,
+        "",
+        `プレイ済み：${stats.playedCount}問`,
+        `的中：${stats.hitCount}問 / 回収率：${stats.totalRecovery}%`,
+        `買い方：${stats.mainBetStyle}`,
+        "",
+        "馬名・レース名を伏せた実在レースで、先入観なしに予想の見方を練習するドリルです。",
+        "#競馬過去問ドリル"
+    ];
+    if (shareUrl) lines.push(shareUrl);
+    return lines.join("\n");
+}
+
+function getShareUrl(slug) {
+    if (location.protocol === "file:") return "";
+    const safeSlug = slug || "training";
+    const basePath = location.pathname.replace(/shindan\.html.*$/, "");
+    return location.origin + basePath + "share/" + safeSlug + ".html";
+}
+
+function getAppUrl() {
+    if (location.protocol === "file:") return "";
+    const basePath = location.pathname.replace(/shindan\.html.*$/, "");
+    return location.origin + basePath;
+}
+
+function renderDiagnosis() {
+    const results = getStageResults();
+    const stats = buildStats(results);
+    const type = judgeType(stats);
+
+    const body = document.getElementById("stage-result-body");
+    body.innerHTML = "";
+
+    results.forEach(result => {
+        const betText = result.played
+            ? `単${result.winAmount} / 複${result.placeAmount} / ワ${result.wideAmount}`
+            : "-";
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${result.label}<br><span style="font-size:.85em;color:#666;">${result.title}</span></td>
+            <td>${result.theme}</td>
+            <td>${result.played ? result.invest + "円" : "-"}</td>
+            <td>${result.played ? result.payout + "円" : "-"}</td>
+            <td>${result.played ? result.recovery + "%" : "-"}</td>
+            <td>${betText}</td>
+            <td>${result.played ? (result.hit ? "的中" : "未的中") : "未プレイ"}</td>`;
+        body.appendChild(tr);
+    });
+
+    document.getElementById("played-count").innerText = stats.playedCount;
+    document.getElementById("hit-count").innerText = stats.hitCount;
+    document.getElementById("total-payout").innerText = stats.totalPayout;
+    const recoveryElem = document.getElementById("total-recovery");
+    recoveryElem.innerText = stats.totalRecovery;
+    recoveryElem.className = stats.totalRecovery >= 150 ? "recovery-high" : stats.totalRecovery >= 100 ? "recovery-mid" : "recovery-low";
+
+    const evalText = document.getElementById("evaluation-text");
+    if (stats.playedCount === 0) {
+        evalText.innerText = "成績評価：未出走（まずは1問解くと診断できます）";
+        evalText.style.color = "#555";
+    } else if (stats.totalRecovery >= 150) {
+        evalText.innerText = "成績評価：高回収（条件のズレをうまく拾えています）";
+        evalText.style.color = "#16a34a";
+    } else if (stats.totalRecovery >= 100) {
+        evalText.innerText = "成績評価：プラス圏（読み方と配分が噛み合っています）";
+        evalText.style.color = "#2563eb";
+    } else if (stats.hitRate >= 40) {
+        evalText.innerText = "成績評価：的中寄り（当て方は見えています。妙味の取り方が次の課題です）";
+        evalText.style.color = "#b45309";
+    } else {
+        evalText.innerText = "成績評価：練習中（重要材料の優先順位を整理すると伸びます）";
+        evalText.style.color = "#dc2626";
+    }
+
+    const confidenceText = document.getElementById("confidence-text");
+    if (stats.playedCount === 0) {
+        confidenceText.innerText = "診断精度：未判定";
+    } else if (diagnosisMode === "beginner") {
+        confidenceText.innerText = stats.playedCount >= 3
+            ? "診断精度：ライト診断として判定済み。全10問では別タイプになる可能性があります。"
+            : "診断精度：仮判定。初級3問まで進めると、より見えやすくなります。";
+    } else {
+        confidenceText.innerText = stats.playedCount >= 10
+            ? "診断精度：総合診断として判定済み。"
+            : "診断精度：途中判定。全10問まで進めると、より正確になります。";
+    }
+
+    document.getElementById("diagnosis-badge").innerText = type.badge;
+    document.getElementById("type-title").innerText = type.title;
+    document.getElementById("type-desc").innerText = type.desc;
+    document.getElementById("type-tendency").innerText = type.tendency;
+    document.getElementById("type-advice").innerText = type.advice;
+
+    document.getElementById("main-bet-style").innerText = getBetStyleText(stats);
+    document.getElementById("hit-style").innerText = getHitStyleText(stats);
+    document.getElementById("diagnosis-memo").innerText = getDiagnosisMemo(stats, type);
+
+    document.getElementById("bar-win").style.width = stats.winShare + "%";
+    document.getElementById("bar-place").style.width = stats.placeShare + "%";
+    document.getElementById("bar-wide").style.width = stats.wideShare + "%";
+    document.getElementById("win-share").innerText = stats.winShare;
+    document.getElementById("place-share").innerText = stats.placeShare;
+    document.getElementById("wide-share").innerText = stats.wideShare;
+
+    const dot = document.getElementById("you-dot");
+    const label = document.getElementById("you-label");
+    dot.style.left = type.x + "px";
+    dot.style.top = type.y + "px";
+    label.style.left = type.x + "px";
+    label.style.top = type.y + "px";
+
+    const shareText = buildShareText(stats, type);
+    document.getElementById("share-preview").innerText = shareText;
+
+    diagnosisResult = {
+        cleanTitle: cleanTypeTitle(type.title),
+        title: type.title,
+        recovery: stats.totalRecovery,
+        totalInvest: stats.totalInvest,
+        totalPayout: stats.totalPayout,
+        playedCount: stats.playedCount,
+        hitCount: stats.hitCount,
+        hitRate: stats.hitRate,
+        mainBetStyle: stats.mainBetStyle,
+        shareText
+    };
+}
+
+function shareToX() {
+    const url = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(diagnosisResult.shareText);
+    window.open(url, "_blank");
+}
+
+function copyShareText() {
+    const text = diagnosisResult.shareText || document.getElementById("share-preview").innerText;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+            alert("診断結果のテキストをコピーしました。");
+        }).catch(() => fallbackCopy(text));
+    } else {
+        fallbackCopy(text);
+    }
+}
+
+function fallbackCopy(text) {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.left = "-9999px";
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    try {
+        document.execCommand("copy");
+        alert("診断結果のテキストをコピーしました。");
+    } catch (e) {
+        alert("コピーできませんでした。表示されたテキストを手動でコピーしてください。");
+    }
+    document.body.removeChild(textarea);
+}
+
+function resetProgress() {
+    const ok = confirm("競馬過去問ドリルのプレイ記録をリセットしますか？");
+    if (!ok) return;
+    stages.filter(stage => getStageNumberForDiagnosis(stage) <= diagnosisMaxStage).forEach(stage => {
+        ["invest","payout","recovery","winHorse","winAmount","placeHorse","placeAmount","wideCombo","wideAmount"].forEach(suffix => {
+            localStorage.removeItem(stage.id + "_" + suffix);
+            localStorage.removeItem(stage.legacyId + "_" + suffix);
+        });
+    });
+    renderDiagnosis();
+}
+
+updateDiagnosisModeDisplay();
+renderDiagnosis();
+</script>
+</body>
+</html>

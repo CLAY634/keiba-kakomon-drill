@@ -1,0 +1,16 @@
+v56 diagnosis enhanced package
+
+Purpose:
+- Strengthen shindan.html before public sharing.
+- Make the diagnosis more shareable on X/Twitter.
+
+Main changes:
+- Enhanced diagnosis title and hero copy.
+- Added anonymous-race explanation.
+- Added betting-style analysis using winAmount/placeAmount/wideAmount from localStorage.
+- Added hit count / hit rate interpretation.
+- Added richer prediction-type names and descriptions.
+- Added tendency and advice blocks.
+- Added share preview and copy button.
+- Kept index.html as the home screen.
+- Kept stage1.html as the v55 data-separated SPA prototype.

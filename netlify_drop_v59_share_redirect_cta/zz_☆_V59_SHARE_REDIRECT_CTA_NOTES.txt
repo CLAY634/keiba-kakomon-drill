@@ -1,0 +1,14 @@
+v59 share redirect CTA package
+
+Purpose:
+- Improve the experience when someone opens a diagnosis type share link from X/Twitter.
+
+Main changes:
+- share/*.html pages still provide type-specific link-card metadata/images for SNS previews.
+- Human visitors see a large '競馬過去問ドリルを開く' button.
+- Human visitors are automatically redirected to ../index.html after 5 seconds.
+- Redirect is implemented with JavaScript, not meta refresh, so SNS crawlers can still read the static page metadata.
+- A noscript fallback button is included.
+
+Base:
+- v58 public type-card package.

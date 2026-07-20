@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>競馬過去問ドリル</title>
+<meta name="description" content="馬名・レース名・開催年を伏せた実在レースで、先入観なしに予想の見方を練習する競馬過去問ドリルです。3問で予想タイプ診断もできます。">
+<meta property="og:title" content="競馬過去問ドリル｜予想タイプ診断">
+<meta property="og:description" content="匿名化された実在レースで、展開・脚質・馬場・コース適性から予想を練習。3問でタイプ診断もできます。">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/ogp/top.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="競馬過去問ドリル｜予想タイプ診断">
+<meta name="twitter:description" content="馬名・レース名を伏せた実在レースで、先入観なしに予想練習。">
+<meta name="twitter:image" content="assets/ogp/top.png">
+
+<style>
+body { margin:0; padding:20px; background:#f3f4f6; font-family:'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif; color:#222; }
+.container { max-width:1000px; margin:0 auto; }
+.hero { background:#fff; padding:28px; border-radius:14px; box-shadow:0 2px 10px rgba(0,0,0,.08); margin-bottom:20px; border-top:6px solid #222; }
+.hero h1 { margin:0 0 8px; font-size:2rem; }
+.hero p { margin:0; line-height:1.7; color:#444; }
+.stats-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:20px; }
+.stat-card,.section-card { background:#fff; border-radius:14px; padding:22px; box-shadow:0 2px 10px rgba(0,0,0,.08); margin-bottom:20px; border:1px solid #e5e7eb; }
+.stat-card { padding:18px; }
+.stat-label { color:#666; font-size:.9rem; margin-bottom:6px; }
+.stat-value { font-size:1.45rem; font-weight:bold; }
+.section-title { margin:0 0 16px; padding-left:12px; border-left:5px solid #222; font-size:1.25rem; }
+.stage-list { list-style:none; padding:0; margin:0; }
+.stage-item { border:1px solid #ddd; border-radius:12px; padding:16px; margin-bottom:14px; background:#fafafa; display:grid; grid-template-columns:1fr auto; gap:16px; align-items:center; }
+.stage-item.played { border-color:#5cb85c; background:#f3fff5; }
+.stage-meta { display:flex; flex-wrap:wrap; gap:8px; margin:8px 0; }
+.badge { display:inline-block; font-size:.78rem; padding:4px 8px; border-radius:999px; background:#e9ecef; color:#333; }
+.badge.easy { background:#e7f7ed; color:#1f7a3b; }
+.badge.middle { background:#fff4d6; color:#8a5b00; }
+.badge.hard { background:#ffe1e1; color:#9a1f1f; }
+.stage-title { font-size:1.08rem; font-weight:bold; }
+.stage-desc { color:#555; line-height:1.6; font-size:.95rem; margin:6px 0 0; }
+.result-mini { font-size:.9rem; color:#333; margin-top:8px; font-weight:bold; }
+.button-row { display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+.btn { display:inline-block; text-decoration:none; border:none; border-radius:8px; padding:10px 16px; font-weight:bold; cursor:pointer; text-align:center; white-space:nowrap; }
+.btn-primary { background:#0275d8; color:#fff; }
+.btn-dark { background:#111; color:#fff; }
+.btn-light { background:#f1f3f5; color:#222; border:1px solid #ddd; }
+.note { color:#666; line-height:1.7; font-size:.95rem; }
+.footer-actions { display:flex; gap:10px; flex-wrap:wrap; }
+@media (max-width:760px) { body{padding:10px} .hero{padding:20px} .hero h1{font-size:1.55rem} .stats-grid{grid-template-columns:1fr} .stage-item{grid-template-columns:1fr} .button-row{justify-content:stretch} .btn{width:100%; box-sizing:border-box} .footer-actions{display:block} .footer-actions .btn{margin-bottom:8px} }
+
+.level-label {
+    margin: 22px 0 10px;
+    font-weight: bold;
+    color: #333;
+    padding: 10px 12px;
+    background: #f8f9fa;
+    border-left: 5px solid #222;
+    border-radius: 8px;
+}
+.footer-note {
+    background:#fff;
+    border:1px solid #e5e7eb;
+    border-radius:14px;
+    padding:18px;
+    color:#555;
+    line-height:1.7;
+    font-size:0.95rem;
+    box-shadow:0 2px 10px rgba(0,0,0,0.06);
+}
+.start-callout{background:#fff;border:1px solid #dfe3e8;border-left:6px solid #0275d8;border-radius:14px;padding:20px;margin:20px 0;box-shadow:0 2px 10px rgba(0,0,0,.06)}.start-callout h2{margin:0 0 8px 0;font-size:1.25rem}.start-callout p{margin:0 0 14px 0;color:#444;line-height:1.7}
+
+.stage-card.clickable-stage {
+    cursor: pointer;
+}
+.stage-card.clickable-stage:hover {
+    transform: translateY(-1px);
+}
+.stage-card .stage-title-link {
+    color: inherit;
+    text-decoration: none;
+}
+.stage-card .stage-title-link:hover {
+    text-decoration: underline;
+}
+
+
+
+.compact-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+  margin: 18px 0 22px;
+}
+.compact-stat {
+  padding: 14px 12px;
+  text-align: center;
+  border-right: 1px solid #e5e7eb;
+}
+.compact-stat:last-child {
+  border-right: none;
+}
+.compact-stat-label {
+  display: block;
+  font-size: 0.82em;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+.compact-stat-value {
+  display: block;
+  font-size: 1.25em;
+  font-weight: 800;
+  color: #111827;
+  line-height: 1.25;
+}
+@media (max-width: 520px) {
+  .compact-stats {
+    margin: 14px 0 18px;
+  }
+  .compact-stat {
+    padding: 12px 6px;
+  }
+  .compact-stat-value {
+    font-size: 1.12em;
+  }
+  .compact-stat-label {
+    font-size: 0.76em;
+  }
+}
+
+
+/* v50: make top stats a full-width compact bar instead of a tiny floating card */
+.compact-stats {
+  width: 100% !important;
+  max-width: none !important;
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  margin: 14px 0 22px !important;
+  box-sizing: border-box !important;
+}
+.compact-stat {
+  min-width: 0 !important;
+}
+@media (min-width: 720px) {
+  .compact-stats {
+    max-width: 100% !important;
+  }
+}
+
+
+/* v51: fix top stats wrapper width */
+.top-stats-wrapper {
+  width: 100% !important;
+  max-width: none !important;
+  display: block !important;
+  box-sizing: border-box !important;
+}
+.top-stats-wrapper .compact-stats,
+.compact-stats {
+  width: 100% !important;
+  max-width: none !important;
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+}
+.top-stats-wrapper .compact-stat,
+.compact-stat {
+  min-width: 0 !important;
+}
+
+
+.top-stats-wrapper {
+  grid-column: 1 / -1 !important;
+  flex: 1 1 100% !important;
+}
+
+</style>
+
+<style>
+.clickable-stage-card {
+  cursor: pointer;
+}
+.clickable-stage-title {
+  cursor: pointer;
+}
+.clickable-stage-title:hover {
+  text-decoration: underline;
+}
+</style>
+
+</head>
+<body>
+<div class="container">
+<header class="hero">
+<h1>競馬過去問ドリル</h1>
+<p>
+        <b>名前を隠すと、競馬は推理ゲームになる。</b><br>
+        馬名・開催年を隠したデータだけで、過去の名レースをあとから解いてみるサイトです。 1問あたり約5〜10分で遊べます。<br>
+        競馬を始めたばかりでも、展開・馬場・距離を少しずつ読めるようになります。
+    </p>
+
+    <div style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap;">
+        <a class="btn btn-primary" href="beginner.html">はじめての方へ</a>
+        <a class="btn btn-light" href="stage1.html">まず1問だけ試す</a>
+    </div>
+
+</header>
+<section class="start-callout">
+<h2>まずは初級3問だけやってみる</h2>
+<p>競馬を知らなくても大丈夫。第1問〜第3問で、展開・瞬発力・持久力の基本を軽く試せます。3問解いたら、あなたの読み方のクセをかんたん診断できます。</p>
+<div style="display:flex;gap:10px;flex-wrap:wrap;">
+<a class="btn btn-primary" href="stage1.html">3問解いてタイプ診断へ</a>
+<a class="btn btn-light" href="shindan.html?mode=beginner">初級3問診断を見る</a>
+</div>
+</section>
+<section class="stats-grid">
+<div class="stat-card top-stats-wrapper">
+<div class="compact-stats" aria-label="プレイ成績">
+  <div class="compact-stat">
+    <span class="compact-stat-label">プレイ済み</span>
+    <span class="compact-stat-value"><span id="played-count">0</span> / 10問</span>
+  </div>
+  <div class="compact-stat">
+    <span class="compact-stat-label">総払戻</span>
+    <span class="compact-stat-value"><span id="total-payout">0</span>円</span>
+  </div>
+  <div class="compact-stat">
+    <span class="compact-stat-label">総回収率</span>
+    <span class="compact-stat-value"><span id="total-recovery">0</span>%</span>
+  </div>
+</div>
+</div>
+</section>
+<main>
+<section class="section-card">
+<h2 class="section-title">過去問一覧</h2>
+<ul class="stage-list" id="stage-list"></ul>
+</section>
+<section class="section-card">
+<h2 class="section-title">タイプ診断</h2>
+<p class="note">10問のプレイ結果から、配分・払戻・回収率を集計し、あなたの予想タイプを診断できます。</p>
+<div class="footer-actions">
+<a class="btn btn-dark" href="shindan.html">診断結果を見る</a>
+<button class="btn btn-light" type="button" onclick="resetProgress()">進捗をリセット</button>
+</div>
+</section>
+</main>
+</div>
+<script>
+const stages = [
+    {
+        "id": "stage1",
+        "legacyId": "race1",
+        "number": 1,
+        "title": "【展開】前が速すぎた日の差し脚",
+        "course": "中山 芝2000m",
+        "difficulty": "初級",
+        "difficultyClass": "easy",
+        "theme": [
+            "展開",
+            "重馬場",
+            "差し"
+        ],
+        "href": "stage1.html",
+        "description": "ハイペースで前が苦しくなる時、どの馬が差してくるかを読む問題。"
+    },
+    {
+        "id": "stage2",
+        "legacyId": "race2",
+        "number": 2,
+        "title": "【瞬発力】最後の200mで問われる適性",
+        "course": "東京 芝2000m",
+        "difficulty": "初級",
+        "difficultyClass": "easy",
+        "theme": [
+            "瞬発力",
+            "距離適性",
+            "好位差し"
+        ],
+        "href": "stage2.html",
+        "description": "強い馬同士の比較で、位置取り・斤量・距離適性を読む問題。"
+    },
+    {
+        "id": "stage3",
+        "legacyId": "race3",
+        "number": 3,
+        "title": "【持久力】良馬場に潜む消耗戦",
+        "course": "阪神 芝2200m",
+        "difficulty": "初級",
+        "difficultyClass": "easy",
+        "theme": [
+            "持久力",
+            "ハイペース",
+            "前受け"
+        ],
+        "href": "stage3.html",
+        "description": "良馬場でもペース次第で消耗戦になる。速い流れを前で受けて残せる馬を読む問題。"
+    },
+    {
+        "id": "stage4",
+        "legacyId": "race4",
+        "number": 4,
+        "title": "【コース】小回り2500mの位置取り勝負",
+        "course": "中山 芝2500m",
+        "difficulty": "中級",
+        "difficultyClass": "middle",
+        "theme": [
+            "小回り",
+            "内枠",
+            "ロングスパート"
+        ],
+        "href": "stage4.html",
+        "description": "コーナーを何度も回る特殊コースで、内枠・位置取り・器用さを読む問題。"
+    },
+    {
+        "id": "stage5",
+        "legacyId": "race5",
+        "number": 5,
+        "title": "【位置取り】内で我慢した者の勝負",
+        "course": "東京 芝2400m",
+        "difficulty": "中級",
+        "difficultyClass": "middle",
+        "theme": [
+            "位置取り",
+            "斤量",
+            "瞬発戦"
+        ],
+        "href": "stage5.html",
+        "description": "直線が長い東京でも、後方一気だけでは届かない場面を読む問題。"
+    },
+    {
+        "id": "stage6",
+        "legacyId": "race6",
+        "number": 6,
+        "title": "【距離】3000mで試される折り合い",
+        "course": "京都 芝3000m",
+        "difficulty": "中級",
+        "difficultyClass": "middle",
+        "theme": [
+            "長距離",
+            "折り合い",
+            "スタミナ"
+        ],
+        "href": "stage6.html",
+        "description": "3000mで能力差だけでなく、折り合いとスタミナ配分を読む問題。"
+    },
+    {
+        "id": "stage7",
+        "legacyId": "race7",
+        "number": 7,
+        "title": "【性能】速すぎる流れを疑うべきか",
+        "course": "東京 芝2000m",
+        "difficulty": "中級",
+        "difficultyClass": "middle",
+        "theme": [
+            "高速決着",
+            "ペース判断",
+            "本命評価"
+        ],
+        "href": "stage7.html",
+        "description": "速い流れを前で受ける馬を疑うべきか、能力差を信じるべきかを読む問題。"
+    },
+    {
+        "id": "stage8",
+        "legacyId": "race8",
+        "number": 8,
+        "title": "【馬場】重い芝が常識を壊す",
+        "course": "阪神 芝2200m",
+        "difficulty": "上級",
+        "difficultyClass": "hard",
+        "theme": [
+            "稍重",
+            "パワー",
+            "波乱"
+        ],
+        "href": "stage8.html",
+        "description": "馬場が重くなった時、人気や能力評価がどう変わるかを読む問題。"
+    },
+    {
+        "id": "stage9",
+        "legacyId": "race9",
+        "number": 9,
+        "title": "【消耗戦】止まらない先頭と大穴の影",
+        "course": "中山 芝2500m",
+        "difficulty": "上級",
+        "difficultyClass": "hard",
+        "theme": [
+            "逃げ",
+            "大穴",
+            "中山適性"
+        ],
+        "href": "stage9.html",
+        "description": "逃げ切りと後方大穴差しが同時に起こる展開を読む問題。"
+    },
+    {
+        "id": "stage10",
+        "legacyId": "race10",
+        "number": 10,
+        "title": "【速度】止まらない先頭を捕まえられるか",
+        "course": "東京 芝1800m",
+        "difficulty": "上級",
+        "difficultyClass": "hard",
+        "theme": [
+            "名勝負",
+            "逃げ",
+            "高速持続"
+        ],
+        "href": "stage10.html",
+        "description": "東京の長い直線でも止まらない先頭を、後続が捕まえられるか読む問題。"
+    }
+];
+
+function getSavedValue(stage, suffix) {
+    const primary = localStorage.getItem(stage.id + "_" + suffix);
+    const legacy = localStorage.getItem(stage.legacyId + "_" + suffix);
+    if (primary !== null) return Number(primary) || 0;
+    if (legacy !== null) return Number(legacy) || 0;
+    return 0;
+}
+
+function renderStages() {
+    const list = document.getElementById("stage-list");
+    list.innerHTML = "";
+    let playableCount = stages.length;
+    let playedCount = 0;
+    let totalInvest = 0;
+    let totalPayout = 0;
+
+    const levelNames = {
+        "初級": "初級：まずは競馬の見方に慣れる",
+        "中級": "中級：コース・距離・位置取りを読む",
+        "上級": "上級：クセの強い名レースに挑戦"
+    };
+    let lastDifficulty = "";
+
+    stages.forEach(stage => {
+        if (stage.difficulty !== lastDifficulty) {
+            const label = document.createElement("div");
+            label.className = "level-label";
+            label.innerText = levelNames[stage.difficulty] || stage.difficulty;
+            list.appendChild(label);
+            lastDifficulty = stage.difficulty;
+        }
+
+        const invest = getSavedValue(stage, "invest");
+        const payout = getSavedValue(stage, "payout");
+        const recovery = invest > 0 ? Math.round((payout / invest) * 100) : 0;
+        const played = invest > 0;
+
+        if (played) {
+            playedCount++;
+            totalInvest += invest;
+            totalPayout += payout;
+        }
+
+        const li = document.createElement("li");
+        li.className = "stage-item" + (played ? " played" : "");
+        const themeBadges = stage.theme.map(t => `<span class="badge">${t}</span>`).join("");
+        const resultHtml = played ? `<div class="result-mini">プレイ済み：配分${invest}円 / 払戻${payout}円 / 回収率${recovery}%</div>` : "";
+        li.innerHTML = `
+            <div>
+                <div class="stage-title">第${stage.number}問：${stage.title}（${stage.course}）</div>
+                <div class="stage-meta"><span class="badge ${stage.difficultyClass}">${stage.difficulty}</span>${themeBadges}</div>
+                <p class="stage-desc">${stage.description}</p>
+                ${resultHtml}
+            </div>
+            <div class="button-row">
+                <a class="btn btn-primary" href="${stage.href}">${played ? "もう一度挑戦" : "挑戦する"}</a>
+            </div>
+        `;
+        list.appendChild(li);
+    });
+
+    const totalRecovery = totalInvest > 0 ? Math.round((totalPayout / totalInvest) * 100) : 0;
+    document.getElementById("played-count").innerText = playedCount;
+    document.getElementById("total-count").innerText = playableCount;
+    document.getElementById("total-payout").innerText = totalPayout;
+    document.getElementById("total-recovery").innerText = totalRecovery;
+}
+
+function resetProgress() {
+    const ok = confirm("競馬過去問ドリルのプレイ記録をリセットしますか？");
+    if (!ok) return;
+    const levelNames = {
+        "初級": "初級：まずは競馬の見方に慣れる",
+        "中級": "中級：コース・距離・位置取りを読む",
+        "上級": "上級：クセの強い名レースに挑戦"
+    };
+    let lastDifficulty = "";
+
+    stages.forEach(stage => {
+        if (stage.difficulty !== lastDifficulty) {
+            const label = document.createElement("div");
+            label.className = "level-label";
+            label.innerText = levelNames[stage.difficulty] || stage.difficulty;
+            list.appendChild(label);
+            lastDifficulty = stage.difficulty;
+        }
+
+        ["invest", "payout", "recovery"].forEach(suffix => {
+            localStorage.removeItem(stage.id + "_" + suffix);
+            localStorage.removeItem(stage.legacyId + "_" + suffix);
+        });
+    });
+    renderStages();
+}
+
+renderStages();
+</script>
+
+
+
+
+<!-- AUDIT_FIX_V30_CLICKABLE_STAGE_CARDS: stage cards can be clicked outside the challenge button. -->
+
+
+<script>
+/* v31: robust clickable stage cards */
+(function () {
+  function findStageLink(scope) {
+    if (!scope) return null;
+    return scope.querySelector(
+      'a[href^="stage"], a[href*="stage"][href$=".html"], a[href*="stage"]'
+    );
+  }
+
+  function closestStageContainer(el) {
+    if (!el) return null;
+
+    const candidates = [
+      '.stage-card',
+      '.stage-item',
+      '.stage-box',
+      '.stage',
+      '.card',
+      '.problem-card',
+      '.lesson-card',
+      '.race-card',
+      'li',
+      'article',
+      'section',
+      'div'
+    ];
+
+    for (const selector of candidates) {
+      const box = el.closest(selector);
+      if (box && findStageLink(box)) return box;
+    }
+    return null;
+  }
+
+  function decorateStageContainers() {
+    const links = Array.from(document.querySelectorAll('a[href*="stage"]'));
+    links.forEach(function (link) {
+      const box = closestStageContainer(link);
+      if (!box) return;
+      box.classList.add('clickable-stage-card');
+      if (!box.hasAttribute('role')) box.setAttribute('role', 'link');
+      if (!box.hasAttribute('tabindex')) box.setAttribute('tabindex', '0');
+
+      // Make obvious title elements feel clickable too.
+      const title = box.querySelector('h1, h2, h3, h4, .title, .stage-title, strong');
+      if (title) title.classList.add('clickable-stage-title');
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', decorateStageContainers);
+  // If cards are generated after DOMContentLoaded, run once more shortly after.
+  setTimeout(decorateStageContainers, 300);
+
+  document.addEventListener('click', function (event) {
+    if (event.target.closest('a, button, input, select, textarea, label')) return;
+
+    const box = closestStageContainer(event.target);
+    if (!box) return;
+
+    const link = findStageLink(box);
+    if (!link || !link.href) return;
+
+    window.location.href = link.href;
+  }, true);
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+
+    const box = event.target.classList && event.target.classList.contains('clickable-stage-card')
+      ? event.target
+      : closestStageContainer(event.target);
+
+    if (!box) return;
+    const link = findStageLink(box);
+    if (!link || !link.href) return;
+
+    event.preventDefault();
+    window.location.href = link.href;
+  });
+})();
+</script>
+
+<!-- AUDIT_FIX_V31_ROBUST_CLICKABLE_CARDS -->
+
+<!-- AUDIT_FIX_V39_TIME_ESTIMATE: added expected play time note. -->
+
+<!-- AUDIT_FIX_V40_TIME_NOTE_INTEGRATED: moved play-time note into intro copy. -->
+
+<!-- AUDIT_FIX_V44_COMPACT_STATS: compacted top-page progress stats into one status bar. -->
+
+<!-- AUDIT_FIX_V50_INDEX_STATS_WIDTH: expanded compact stats to full-width bar. -->
+
+<!-- AUDIT_FIX_V51_STATS_WIDTH: fixed narrow top stats wrapper. -->
+</body>
+</html>
