@@ -342,18 +342,26 @@ button{ cursor:pointer; }
 }
 
 
-/* v45: compact prediction area + checked horse summary */
-.bet-section,
-.prediction-section,
-#betting-section,
-#prediction-section {
-    margin-top: 18px !important;
-    padding-top: 18px !important;
-    padding-bottom: 18px !important;
-}
-.selected-horses-panel {
+.stage-help-link {
     margin: 10px 0 14px;
-    padding: 10px 12px;
+    font-size: 0.94em;
+    color: #475569;
+}
+.stage-help-link a {
+    color: #2563eb;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+.stage-help-link small {
+    color: #64748b;
+    font-weight: 400;
+}
+
+
+.selected-horses-panel {
+    margin: 12px 0 16px;
+    padding: 12px 14px;
     background: #f8fafc;
     border: 1px solid #dbe3ea;
     border-left: 4px solid #64748b;
@@ -373,36 +381,7 @@ button{ cursor:pointer; }
     color: #64748b;
     font-weight: 400;
 }
-@media (max-width: 560px) {
-    .bet-section,
-    .prediction-section,
-    #betting-section,
-    #prediction-section {
-        margin-top: 14px !important;
-        padding: 14px 12px !important;
-    }
-    .selected-horses-panel {
-        font-size: 0.92em;
-        padding: 9px 10px;
-    }
-}
 
-
-.stage-help-link {
-    margin: 10px 0 14px;
-    font-size: 0.94em;
-    color: #475569;
-}
-.stage-help-link a {
-    color: #2563eb;
-    font-weight: 700;
-    text-decoration: underline;
-    text-underline-offset: 2px;
-}
-.stage-help-link small {
-    color: #64748b;
-    font-weight: 400;
-}
 
 </style>
 </head>
@@ -1340,16 +1319,16 @@ function renderYoutubeSearchLink() {
 
 
 
-
-
 function updateSelectedHorsesPanel() {
     const panel = document.getElementById("selected-horses-list");
     if (!panel || !Array.isArray(raceData.horses)) return;
 
-    const checked = Array.from(checkedHorseNumbers || [])
-        .map(raw => {
-            const n = parseInt(raw, 10);
-            if (!Number.isFinite(n)) return null;
+    const source = (typeof checkedHorseNumbers !== "undefined") ? checkedHorseNumbers : new Set();
+    const checked = Array.from(source)
+        .map(raw => parseInt(raw, 10))
+        .filter(n => Number.isFinite(n))
+        .sort((a, b) => a - b)
+        .map(n => {
             const horse = raceData.horses.find(h => Number(h.number) === n);
             if (!horse) return `${n}番`;
             return `${n}番 ${horse.name}`;
@@ -1365,16 +1344,6 @@ function updateSelectedHorsesPanel() {
 
 document.addEventListener("DOMContentLoaded", updateSelectedHorsesPanel);
 
-
-
-
-
-
-function getWideSelects() {
-    const wide1 = document.getElementById("wide1");
-    const wide2 = document.getElementById("wide2");
-    return [wide1, wide2].filter(Boolean);
-}
 
 function normalizeSelectValue(value) {
     if (!value) return "";
@@ -1432,10 +1401,6 @@ document.addEventListener("change", function(e) {
     }
 });
 document.addEventListener("DOMContentLoaded", updateWideSelectOptions);
-
-
-
-
 
 function judgeRace(){
     if (!validateWideSelection()) return;
@@ -1551,6 +1516,7 @@ function judgeRace(){
 function shareToX(){
     const payout = document.getElementById("payout-display").innerText;
     const recovery = document.getElementById("recovery-display").innerText;
+    const siteUrl = location.origin + location.pathname.replace(/stage\d+\.html.*$/, "") + "index.html";
     const text =
 `競馬過去問ドリルに挑戦。
 
@@ -1561,7 +1527,8 @@ ${raceData.title}
 回収率：${recovery}%
 
 あなたならどう読む？
-#競馬過去問ドリル`;
+#競馬過去問ドリル
+${siteUrl}`;
 
     const url = "https://twitter.com/intent/tweet?text=" + encodeURIComponent(text);
     window.open(url, "_blank");
@@ -1589,14 +1556,8 @@ ${raceData.title}
 
 <!-- AUDIT_FIX_V43_YOUTUBE_SUBTLE: lowered visual priority of YouTube search link. -->
 
-<!-- AUDIT_FIX_V45_SELECTED_HORSES: added checked-horse summary near prediction inputs and compacted spacing. -->
+<!-- AUDIT_FIX_V50_FROM_V44_STABLE: reapplied stable post-v44 fixes; checked panel and wide options rebuilt. -->
 
-<!-- AUDIT_FIX_V46_BEGINNER_LINK: added beginner guide link opening in a new tab. -->
-
-<!-- AUDIT_FIX_V47_CHECKBOX_WIDE: fixed checked-horse panel and blocked duplicate wide selections. -->
-
-<!-- AUDIT_FIX_V48_WIDE_OPTION_FILTER: wide selects now hide/disable duplicate horse options. -->
-
-<!-- AUDIT_FIX_V49_CHECKBOX_WIDE_REALFIX: selected horses uses checkedHorseNumbers; wide filtering uses #wide1/#wide2 only. -->
+<!-- AUDIT_FIX_V52_SELECTED_SORT: checked horse panel now displays horses in number order. -->
 </body>
 </html>
